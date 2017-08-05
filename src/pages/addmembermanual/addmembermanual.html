@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>添加新用户</ion-title>
+  </ion-navbar>	
+</ion-header>
+<p></p>
+<p></p>
+<ion-content>
+  <ion-list>
+ 
+	<ion-item>
+    <ion-label fixed>姓名</ion-label>
+    <ion-input type="text" clearInput [(ngModel)]="name"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label fixed>手机号</ion-label>
+    <ion-input type="text" clearInput [(ngModel)]="phone"></ion-input>
+  </ion-item>
+
+	<ion-item>
+	<button ion-button block (click)="submitclick()" style="height:4em" >提交</button>
+	</ion-item>
+
+  </ion-list>
+</ion-content>
+

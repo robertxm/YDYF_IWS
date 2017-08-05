@@ -1,0 +1,35 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>请选择暂不收楼原因</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list radio-group [(ngModel)]="rejectreason">
+
+    <ion-item *ngFor="let item of reasons">
+      <ion-label>{{item}}</ion-label>
+      <ion-radio [value]="item"></ion-radio>
+    </ion-item>
+
+
+  <ion-item>
+    <ion-input type="text" placeholder="补充说明" height="100px" max=200 [(ngModel)]="plusdesc"></ion-input>
+  </ion-item>
+  </ion-list>
+
+  <button ion-button clear (click)="showlogclick()">查看暂不收楼记录</button>
+  <ion-list *ngIf="showlog">
+    <ion-item *ngFor="let item of logs">
+      <h2>{{item.date}} &nbsp;&nbsp; {{item.reason}} &nbsp;&nbsp; {{item.plusdesc}} &nbsp;&nbsp; </h2> <h3></h3>      
+      <!--<p>I've had a pretty messed up day. If we just...</p>-->
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <button ion-button color="default" full (click)="confirmclick()">暂不收楼，继续整改</button>
+</ion-footer>

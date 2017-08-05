@@ -1,0 +1,69 @@
+﻿<ion-header>
+  <ion-navbar>
+    <ion-title>交付信息</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+  <ion-list>
+    <ion-item-group>
+      <ion-item-divider color="light"><ion-icon name="albums" item-right></ion-icon>基础信息</ion-item-divider>
+      <ion-item><ion-label>房　　产</ion-label><ion-textarea type="text" rows=2 readonly="true" value="{{ receiptInfo.projName + ' ' + receiptInfo.buildingName + ' ' +  receiptInfo.roomName }}"></ion-textarea></ion-item>
+      <ion-item><ion-label>业主姓名</ion-label><ion-input type="text" readonly="true" value="{{ receiptInfo.ownerName }}"></ion-input></ion-item>
+      <ion-item><ion-label>联系电话</ion-label><ion-input type="text" readonly="true" value="{{ receiptInfo.ownerPhone }}"></ion-input></ion-item>
+    </ion-item-group>
+    <ion-item-group *ngIf = "issueList!=undefined && issueList.length>0">
+      <ion-item-divider color="light"><ion-icon name="search" item-right></ion-icon>验房问题</ion-item-divider>
+      <ion-item *ngFor = "let issue of issueList" >
+        <ion-icon ios="ios-information-circle" md="md-information-circle" item-left color="danger" *ngIf="issue.status=='待整改' || issue.status == '待派单'" ></ion-icon>
+        <ion-icon ios="ios-information-circle" md="md-information-circle" item-left color="primary" *ngIf="issue.status=='已整改'"></ion-icon>
+        <ion-icon ios="ios-information-circle" md="md-information-circle" item-left color="secondary" *ngIf="issue.status=='已通过'"></ion-icon>
+        <h2>{{ issue.posi }}</h2><p>{{ issue.desc }}</p>
+      </ion-item>
+    </ion-item-group>
+    <ion-item-group>
+      <ion-item-divider color="light"><ion-icon name="clipboard" item-right></ion-icon>交付信息</ion-item-divider>
+      <ion-item><ion-label fixed>电表底数</ion-label><span style="width:70px;" item-right>度</span><ion-input [readonly] = "readonly" type="number" [(ngModel)]="receiptInfo.electricMeter" ></ion-input></ion-item>
+      <ion-item><ion-label fixed>水表底数</ion-label><span style="width:70px;" item-right>立方</span><ion-input [readonly] = "readonly" type="number" [(ngModel)]="receiptInfo.waterMeter"></ion-input></ion-item>
+      <ion-item><ion-label fixed>气表底数</ion-label><span style="width:70px;" item-right>立方</span><ion-input [readonly] = "readonly" type="number" [(ngModel)]="receiptInfo.gasMeter"></ion-input></ion-item>
+      <ion-item><ion-label fixed>钥匙留用</ion-label><span style="width:70px;" item-right>把　</span><ion-input [readonly] = "readonly" type="number" [(ngModel)]="receiptInfo.keyReserve"></ion-input></ion-item>
+      <button ion-item (click)="doSignature()" fixed>
+        <ion-label fixed>业主签名</ion-label>
+        <span style="width:170px;" item-right><img style="background-color:white;height:40px;" src="{{receiptInfo.ownerSign}}" /></span>
+      </button>
+      <!--<ion-item><ion-label fixed>交付日期</ion-label><ion-input type="text" value="{{receiptInfo.dlvrDate}}"></ion-input></ion-item>-->
+      <ion-item *ngIf="readonly"><ion-label>交付日期&nbsp;&nbsp;&nbsp;&nbsp;{{receiptInfo.dlvrDate}}</ion-label></ion-item>
+      <ion-item  *ngFor="let item of satDim" ><ion-label>{{item.dim}}</ion-label>
+        <ion-icon name="{{i<item.score?'star':'star-outline'}}" item-right color="danger" *ngFor="let s of getStars(5); let i = index;"
+                  (click)="starClick(item,i+1)" on-touch="starClick(item,i+1)"
+                  on-tap="starClick(item,i+1)" on-swipe="starClick(item,i+1)"
+                  id="{{item.dim+(i+1)}}"></ion-icon>
+        <!--isActive="{{i<receiptInfo[item.name]?'true':'false'}}"-->
+      </ion-item>
+      <ion-item><ion-label>补充说明</ion-label><ion-textarea [readonly] = "readonly" placeholder="满意度/其他补充说明" max=200 [(ngModel)]="receiptInfo.additionNote"></ion-textarea></ion-item>
+      <!--<ion-item><ion-label>提交后自动上传<span style="font-size:small;color:gray;">(非wifi网络会消耗流量)</span></ion-label><ion-checkbox item-right></ion-checkbox></ion-item>-->
+    </ion-item-group>
+  </ion-list>
+</ion-content>
+<ion-footer>
+  <div #contentEl id="signPad" style="background-color:antiquewhite">
+    <div style="width:100%; height:20px; background-color:lightgray;" >请在下方签名：</div>
+    <signature-pad [options]="signaturePadOptions" (onBeginEvent)="drawStart()" (onEndEvent)="drawComplete()"></signature-pad>
+    <ion-row  style="background-color:lightgray;" >
+      <ion-col col-6><button ion-button block (click)="endSignature()">关闭</button></ion-col>
+      <ion-col col-6><button ion-button block (click)="clearSign()">清除</button></ion-col>
+    </ion-row>
+  </div>
+  <div id="footbar" *ngIf="readonly==false">
+    <table style="width:100%;">
+      <tr>
+        <td>
+          <button ion-button color="default" full (click)="doSubmit()">提交</button>
+        </td>
+        <td width="130px">
+          <button ion-button color="danger" full (click)="doCancel()">取消</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+</ion-footer>
+

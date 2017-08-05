@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      非正常关闭详情
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+<ion-list radio-group [(ngModel)]="closereason" >
+  <ion-list-header>
+    关闭原因
+  </ion-list-header>
+
+  <ion-item>
+    <ion-label>与承建商或业主协商后，无需修复</ion-label>
+    <ion-radio checked="true" value="与承建商或业主协商后，无需修复"></ion-radio>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>无法与业主达成一致</ion-label>
+    <ion-radio value="无法与业主达成一致"></ion-radio>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>其他原因</ion-label>
+    <ion-radio value="其他原因"></ion-radio>
+  </ion-item>
+
+  <ion-item *ngIf="closereason ==='其他原因' ">
+    <ion-input type="text" placeholder="其他原因" height=100px [(ngModel)]="otherdesc" clearInput></ion-input>
+</ion-item>
+</ion-list>
+
+  <p></p>
+  <ion-list>
+  <ion-item>
+    <button *ngIf="images && images.length < 3" ion-button icon-only (click)="cameraclick()">
+	  <ion-icon ios="ios-camera" md="md-camera"></ion-icon>
+	 </button>
+    <ion-thumbnail item-left *ngFor="let item of images" style="margin:5px;min-width:50px;min-height:50px">
+      <div style="color:red"><ion-icon item-right ios="ios-close" md="md-close" (click)="deleteimage(item)"></ion-icon></div>
+      <img [src]="item" (click)="showBigImage(item)" style="width:50px; height:50px">
+    </ion-thumbnail>
+  </ion-item>
+  </ion-list>
+
+</ion-content>
+
+<ion-footer>
+<ion-item>
+	<button ion-button full (click)="confirmclick()" style="height:2.8em" color="primary">确定</button>
+	</ion-item>
+</ion-footer>

@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>工地开放</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content *ngIf="nodata===false">  	
+	<ion-list inset  *ngFor="let buildings of batchbuildings">				
+		<ion-item> <h2>{{projname}} : {{buildings.batchname}}</h2>	</ion-item>
+		<ion-item detail-push *ngFor="let building of buildings.buildings" (click)="itemSelected(buildings.batchid,building)">    
+    <h2>{{building.buildingname}}</h2>
+	  <!--<button *ngIf="building.needtype===0" ion-button clear item-right color='stable' (click)="itemSelected(building)">进入</button> -->
+		<button *ngIf="building.needtype===1" ion-button clear item-right color='primary' >下载</button>
+		<button *ngIf="building.needtype===2" ion-button clear item-right color='danger' >上传</button>
+    <button *ngIf="building.needtype===3" ion-button clear item-right color='primary' >更新</button>
+		</ion-item>
+	</ion-list>	
+</ion-content>
+<ion-content *ngIf="nodata===true">  
+<ion-img width="100%" height="100%" src="assets/img/happy.jpg"></ion-img>
+</ion-content>
+

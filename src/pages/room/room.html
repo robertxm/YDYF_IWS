@@ -1,0 +1,86 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title left>{{buildingname}}{{roomname}}</ion-title>
+    <ion-buttons right>
+      <button ion-button (click)="listshowclick()">{{liststr}}
+        <!--<ion-icon name="options"></ion-icon>-->
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+  图例：
+  <table style="width:100%; text-align:center;">
+    <tr>
+      <td><span style="width:12px;height:12px;border-radius:6px;display:inline-block; background-color:blueviolet;"></span>待派单<br />({{readycounts}})</td>
+      <td><span style="width:12px;height:12px;border-radius:6px;display:inline-block; background-color:red;"></span>待整改<br />({{forfixcounts}})</td>
+      <td><span style="width:12px;height:12px;border-radius:6px;display:inline-block; background-color:blue;"></span>已整改<br />({{fixedcounts}})</td>
+      <td><span style="width:12px;height:12px;border-radius:6px;display:inline-block; background-color:green;"></span>已通过<br />({{passcounts}})</td>
+    </tr>
+  </table>
+  <p></p>
+  <!--<div style="width:100%;height:1px; background-color:aqua"></div>-->
+  <div id="apartimg">
+    <div id="container" style="overflow:hidden; height:400px; border:solid 1px #cccccc;">
+      <div id="stage" (click)='stageClick($event)' style="width: 100%; height: 700px;background-size: contain;background-repeat: no-repeat; position:relative;"></div>
+    </div>
+    <p></p>
+    <div style="width:100%; background-color:#EEEEEE">
+      <p><span id="statusMessage">提示：点击户型图可新增问题</span> </p>
+      <!--<p>点击坐标：<span id="clickX">x</span>,<span id="clickY">y</span></p>-->
+    </div>
+  </div>
+
+  <ion-list *ngIf="listview===true">
+    <ion-item *ngFor="let issue of issues" (click)="listclick(issue.id)">
+      <ion-label>
+        <p>
+          <span style="width:60%; display:inline-block;line-height:18px">          
+					  <span *ngIf="issue.status=='待派单'" style="background-color:blueviolet;width:12px;height:12px;border-radius:6px;display:inline-block;"></span> 
+            <span *ngIf="issue.status=='待整改'" style="background-color:red;width:12px;height:12px;border-radius:6px;display:inline-block;"></span>
+            <span *ngIf="issue.status=='已整改'" style="background-color:blue;width:12px;height:12px;border-radius:6px;display:inline-block;"></span>
+            <span *ngIf="issue.status=='已通过'" style="background-color:green;width:12px;height:12px;border-radius:6px;display:inline-block;"></span>
+            <span *ngIf="issue.status=='已作废'" style="background-color:gray;width:12px;height:12px;border-radius:6px;display:inline-block;"></span>
+            <span *ngIf="issue.status=='非正常关闭'" style="background-color:orange;width:12px;height:12px;border-radius:6px;display:inline-block;"></span>            
+            <!--<span style="background-color:'{{(issue.status=='待派单'?'blueviolet':(issue.status=='待整改'?'red':(issue.status=='已整改'?'blue':(issue.status=='已通过'?'green':(issue.status=='已作废'?'gray':(issue.status=='非正常关闭'?'orange':'black'))))))}}';width:12px;height:12px;border-radius:6px;display:inline-block;"></span>-->
+            <span style="display:inline-block;">问题编号:{{issue.issueid}}</span>
+          </span>
+          <span style="width:40%; display:inline-block; text-align:right; font-size:9pt; color:white;">
+							<span style="background-color:blueviolet;border-radius:3px;" *ngIf="issue.overdays!=undefined && issue.overdays>0" >&nbsp;超时{{issue.overdays}}天&nbsp;</span>&nbsp;
+          <span style="background-color:orange;border-radius:3px;" *ngIf="issue.returntimes!=undefined && issue.returntimes>0">&nbsp;退{{issue.returntimes}}次&nbsp;</span>
+          </span>
+        </p>
+        <!--<p>&nbsp;</p>-->
+        <h2 style="line-height:26px">{{issue.position}}&nbsp; 紧急程度:{{issue.UrgencyId}} &nbsp;整改时限:{{issue.duedate}}</h2>
+        <h2 style="line-height:26px">{{issue.checkitem}}:{{issue.IssueDesc}} &nbsp;{{issue.PlusDesc}}</h2>
+        <p><span style="width:50%; display: inline-block;line-height:26px ">工程师: {{issue.EngineerName}}  &nbsp;&nbsp;   负责人: {{issue.ResponsibleName}}&nbsp;&nbsp;状态:{{issue.status}} </span>
+          <!--<span style="width:50%; display: inline-block; text-align:right; ">&nbsp;整改时限：{{issue.duedate}}</span>-->
+        </p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+</ion-content>
+
+<ion-footer *ngIf="type == 3 && userrole.indexOf('A6') != -1">
+  <div *ngIf="readonly==false">
+    <table width="100%">
+      <tr>
+        <td width="130px">
+          <button ion-button color="danger" full (click)="doReject()">暂不收楼</button>
+        </td>
+        <td>
+          <button ion-button color="default" full (click)="doReceipt()">收楼</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div *ngIf="readonly">
+    <table width="100%">
+      <button ion-button color="default" full (click)="Receiptinfo()">交付信息</button>
+    </table>
+  </div>
+</ion-footer>

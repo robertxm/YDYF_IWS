@@ -1,0 +1,126 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>问题详情</ion-title>
+  </ion-navbar>
+  <div style="width:100%; background:#f7f7f7; padding:5px 15px 5px 15px; border-top:1px solid #cccccc;">
+    <table style="width:100%;">
+      <tr>
+        <td style="width:5px;" class="{{status}}">&nbsp;
+        </td>
+        <td style="font-size:16pt;">&nbsp;{{issue.status}}
+        </td>
+        <td style="text-align:right; color:white;">
+          <span style="background-color:blueviolet;border-radius:3px;" *ngIf="issue.overdays!=undefined && issue.overdays>0">&nbsp;超时{{issue.overdays}}天&nbsp;</span>&nbsp;&nbsp;
+          <span style="background-color:orange;border-radius:3px;" *ngIf="issue.returntimes!=undefined && issue.returntimes>0">&nbsp;退{{issue.returntimes}}次&nbsp;</span>
+        </td>
+      </tr>
+    </table>
+  </div>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+      <ion-label fixed>编号</ion-label>
+      <!--<ion-label item-right>{{issueId}}</ion-label>-->
+      <ion-input type="text" value="{{issue.issueid}}" readonly></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label fixed>房号</ion-label>
+      <ion-input value="{{issue.buildingname}}-{{issue.floorname}}-{{issue.roomname}}" readonly></ion-input>
+    </ion-item>
+    <ion-item class="item-input" (click)="positionview()">
+      <ion-label fixed>部位</ion-label>
+      <ion-label item-right style="margin:0;">
+        <button ion-button clear style="padding:0 6px;" (click)="positionview()">{{issue.position}}
+      &nbsp;&nbsp;<ion-icon name="pin"></ion-icon></button>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label fixed>问题分类</ion-label>
+      <ion-input value="{{issue.checkitem}}" readonly></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label fixed>描述</ion-label>
+      <ion-input value="{{issue.IssueDesc}}" readonly></ion-input>
+    </ion-item>
+    <ion-item class="item-input">
+      <ion-label fixed>整改前照片</ion-label>
+      <!--<ion-label item-right style="margin:0.8px 0px 0px 0px;"></ion-label>-->
+      <ion-thumbnail item-right *ngFor="let item of images" style="margin:5px;min-width:50px;min-height:50px">
+        <img [src]="item" (click)="showBigImage(item,0)" style="width:50px; height:50px" />
+      </ion-thumbnail>
+      <!--<img *ngFor="let item of images" height="48" [src]="item" style="margin:0 0 0 8px;" (click)="showBigImage(item)"/>-->
+
+    </ion-item>
+    <ion-item class="item-input">
+      <ion-label fixed>整改后照片</ion-label>
+      <!--<ion-label item-right style="margin:0.8px 0px 0px 0px;"></ion-label>-->
+      <ion-thumbnail item-right *ngFor="let item of imagesfixed" style="margin:5px;min-width:50px;min-height:50px">
+        <img [src]="item" (click)="showBigImage(item,1)" style="width:50px; height:50px" />
+      </ion-thumbnail>
+      <!--<img *ngFor="let item of imagesfixed" height="48" [src]="item" style="margin:0 0 0 8px;" (click)="showBigImage(item)"/>-->
+
+    </ion-item>
+    <ion-item>
+      <ion-label fixed>整改说明</ion-label>
+      <ion-input readonly value="{{fixeddesc}}"></ion-input>
+      <!--<ion-textarea  [(ngModel)]="fixeddesc"></ion-textarea>-->
+    </ion-item>
+    <ion-item>
+      <ion-label fixed>登记时间</ion-label>
+      <ion-input value="{{registertime}}" readonly></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label fixed>指派时间</ion-label>
+      <ion-input readonly value="{{assigntime}}"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label fixed>整改时限</ion-label>
+      <ion-input readonly value="{{duetime}}"></ion-input>
+    </ion-item>    
+    <ion-item>
+      <ion-label fixed>负责人</ion-label>
+      <ion-input readonly value="{{issue.ResponsibleName}}"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label fixed>整改时间</ion-label>
+      <ion-input value="{{fixedtime}}" readonly color="danger"></ion-input>
+    </ion-item>
+
+    <ion-item-divider color="light" *ngIf="return_log!=undefined && return_log.length >= 1">退回信息</ion-item-divider>
+    <ion-item *ngFor="let r of return_log" class="item-input">
+      <ion-label fixed>
+        退回人<br/> 退回时间
+        <br/> 退回原因
+        <br/>
+      </ion-label>
+      <ion-textarea rows=4 readonly value="{{r.return_person+'\n'+r.return_date+'\n'+r.return_message}}"></ion-textarea>
+    </ion-item>
+  </ion-list>
+</ion-content>
+<ion-footer>
+  <table style="width:100%;" *ngIf="issue.status != '已整改'">
+    <tr>
+      <td *ngIf="issue.status != '待派单'">
+        <button ion-button full color="light" (click)="returnassign()">退回</button>
+      </td>
+      <td *ngIf="issue.status == '待派单'">
+        <button ion-button full color="primary" (click)="assignchange()">变更负责人</button>
+      </td>
+      <td *ngIf="issue.status == '待整改'">
+        <button ion-button full color="primary" (click)="assignchange()">变更负责人</button>
+      </td>
+      <td *ngIf="issue.status == '待整改' || issue.status == '待派单'">
+        <button ion-button full color="secondary" (click)="fixedclick()">整改完成</button>
+      </td>
+    </tr>
+  </table>
+  <!--<table style="width:100%;" *ngIf="issue.status == '已整改'">
+    <tr>
+      <td>
+        <button ion-button full color="red" (click)="returned()">退回</button>
+      </td>      
+    </tr>
+  </table>-->
+</ion-footer>

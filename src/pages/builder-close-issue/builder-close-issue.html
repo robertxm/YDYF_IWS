@@ -1,0 +1,72 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>整改完成</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+    <!--<ion-item class="item-input">
+      <ion-label fixed>整改前照片</ion-label>
+      <ion-label item-right style="margin:0.8px 0px 0px 0px;">
+        <img *ngFor="let p of photos_before" height="48" src="{{p.src}}" style="margin:0 0 0 8px;" />
+      </ion-label>
+    </ion-item>-->
+    <ion-item>
+      <ion-label left>整改前照片</ion-label>
+      <ion-thumbnail item-right *ngFor="let item of images" style="margin:5px;min-width:50px;min-height:50px">
+        <img [src]="item" (click)="showBigImage(item,0)" style="width:50px; height:50px"/>
+      </ion-thumbnail>      
+    </ion-item>
+
+    <ion-item>整改后照片
+      <!--<ion-label fixed>整改后照片</ion-label>-->
+      <button left *ngIf="imagesfixed && imagesfixed.length < 3" ion-button icon-only (click)="cameraclick()">
+	  <ion-icon ios="ios-camera" md="md-camera"></ion-icon>
+	 </button>
+      <ion-thumbnail item-right *ngFor="let item of imagesfixed" style="margin:5px;min-width:50px;min-height:50px">
+        <div style="color:red">
+          <ion-icon item-right ios="ios-close" md="md-close" (click)="deleteimage(item)"></ion-icon>
+        </div>
+        <img [src]="item" (click)="showBigImage(item,1)"  style="width:50px; height:50px">
+      </ion-thumbnail>
+    </ion-item>
+
+    <!--<ion-item class="item-input">
+      <ion-label fixed>整改后照片</ion-label>
+      <ion-label item-right style="margin:0.8px 0px 0px 0px;">
+        <img *ngFor="let p of photos_after" height="48" src="{{p.src}}" style="margin:0 0 0 8px;" />
+      </ion-label>
+    </ion-item>-->
+    <ion-item>
+      <ion-textarea rows=10 placeholder="请输入整改说明" [(ngModel)]="fixeddesc"></ion-textarea>
+    </ion-item>
+
+    <ion-item *ngIf="overdays > 0">
+      <ion-label>超时原因</ion-label>
+      <ion-select [(ngModel)]="reasonovertime" okText="确定" cancelText="取消">
+        <ion-option *ngFor="let item of reasonsovertimes">{{item}}</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="reasonovertime ==='其他' ">
+      <ion-textarea rows=3 placeholder="其他说明" [(ngModel)]="reasonovertimeother"></ion-textarea>
+      <!--<ion-input type="text" placeholder="其他说明" height="100px" [(ngModel)]="otherdesc"></ion-input>-->
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer id="actionbtn">
+  <div id="footbar">
+    <table style="width:100%;">
+      <tr>
+        <td width="30%">
+          <button ion-button block color="danger" (click)="cancel()">取消</button>
+        </td> 
+        <td >
+          <button ion-button block (click)="submit()">确认</button>
+        </td>               
+      </tr>
+    </table>
+  </div>
+</ion-footer>

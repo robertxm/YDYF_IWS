@@ -1,0 +1,21 @@
+﻿<!--
+  Generated template for the Signature page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+<ion-content padding>
+  <div #contentEl>
+    <div>请在下方签名：</div>
+    <signature-pad [options]="signaturePadOptions" (onBeginEvent)="drawStart()" (onEndEvent)="drawComplete()"></signature-pad>
+    <ion-row>
+      <ion-col col-6><button ion-button block [disabled]="signaturePad.isEmpty()" (click)="save()">保存</button></ion-col>
+      <ion-col col-6><button ion-button block [disabled]="signaturePad.isEmpty()" (click)="empty()">清除</button></ion-col>
+    </ion-row>
+    <div *ngIf="imageData" padding-top>
+      <div>生成签名图片：</div>
+      <img src="{{imageData}}" />
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,86 @@
+<!--<ion-header>-->
+<!--<ion-navbar>
+    <ion-title>iWS移动验房 登陆页面</ion-title>
+  </ion-navbar>-->
+
+<!--</ion-header>-->
+
+<ion-content>  
+  <!--<ion-img width="100%" height="{{imgheight}}" src="assets/img/login.jpg"></ion-img>-->
+
+  <ion-list>
+
+    <ion-item>
+      <ion-img width="100%" height="{{imgheight}}" src="assets/img/login.jpg"></ion-img>
+    </ion-item>    
+   
+    <ion-item>
+      <ion-label top = '10px' color="primary" fixed>用户名</ion-label>      
+      <ion-input type="text" placeholder="输入用户名" clearInput [(ngModel)]="userid"></ion-input>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-label color="primary" fixed>密  码</ion-label>
+      <ion-input type="password" placeholder="输入密码" clearInput [(ngModel)]="password"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <button ion-button block (click)="loginclick()" style="height:4em">登 录</button>
+    </ion-item>
+
+  </ion-list>  
+  <!--<ion-item>
+      <ion-label left>整改前照片</ion-label>
+      s
+    </ion-item>
+
+    <ion-item>
+      <ion-label left>整改前照片</ion-label>
+      <ion-thumbnail item-right *ngFor="let item of images" style="margin:5px;min-width:50px;min-height:50px">
+        <img [src]="item" (click)="showBigImage(item)" style="width:50px; height:50px"/>
+      </ion-thumbnail>
+    </ion-item>-->
+    
+
+    <!--<ion-item>
+      <ion-label fixed>整改前照片</ion-label>
+      <table item-right style="width:70%;">
+      <tr>
+        <td >
+          <ion-thumbnail style="margin:5px;min-width:50px;min-height:50px;">
+        <img src="assets/img/login.jpg" style="width:50px; height:50px"/>
+      </ion-thumbnail>
+        </td>
+        <td >
+          <ion-thumbnail style="margin:5px;min-width:50px;min-height:50px">
+        <img src="assets/img/login.jpg" style="width:50px; height:50px"/>
+      </ion-thumbnail>
+        </td> <td >
+          <ion-thumbnail style="margin:5px;min-width:50px;min-height:50px">
+        <img src="assets/img/login.jpg" style="width:50px; height:50px"/>
+      </ion-thumbnail>
+        </td>   
+      </tr>
+    </table>
+    </ion-item>  -->
+
+  <!--<table style="width:100%; text-align:center;">
+    <tr>
+      <td><span style="width:  12px;height: 12px;border-radius:6px;display:inline-block; background-color:blueviolet;"></span>待派单<br />(readycounts)</td>
+      <td><span style="width:  12px;height: 12px;border-radius:6px;display:inline-block; background-color:red;"></span>待整改<br />(readycounts)</td>
+      <td><span style="width:  12px;height: 12px;border-radius:6px;display:inline-block; background-color:blue;"></span>已整改<br />(readycounts)</td>
+      <td><span style="width:  12px;height: 12px;border-radius:6px;display:inline-block; background-color:green;"></span>已通过<br />(readycounts)</td>
+    </tr>
+  </table>
+
+  <ion-segment [(ngModel)]="icons" color="secondary">
+    <ion-segment-button value="camera" style="line-height:2rem;">
+      test<br /> November 5, 1955
+    </ion-segment-button>
+    <ion-segment-button value="bookmark" style="line-height:2rem;">
+      test<br /> November 5, 1955
+    </ion-segment-button>
+  </ion-segment>-->
+
+</ion-content>

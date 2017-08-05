@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      退回原因
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+<ion-list radio-group [(ngModel)]="returnreason" >
+  <!--<ion-list-header>
+    
+  </ion-list-header>-->
+
+  <ion-item>
+    <ion-label>指派错误,退回让承建商重新指派</ion-label>
+    <ion-radio checked="true" value="指派错误,退回让承建商重新指派"></ion-radio>
+  </ion-item>  
+
+  <ion-item>
+    <ion-label>其他</ion-label>
+    <ion-radio value="其他"></ion-radio>
+  </ion-item>
+
+  <ion-item *ngIf="returnreason ==='其他' ">
+    <ion-input type="text" placeholder="其他说明" height="100px" [(ngModel)]="otherdesc"></ion-input>
+</ion-item>
+</ion-list>
+
+</ion-content>
+
+<ion-footer>
+<ion-item>
+	<button ion-button full (click)="confirmclick()" style="height:2.8em" color="primary">确定</button>
+	</ion-item>
+</ion-footer>

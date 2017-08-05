@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      我的团队
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let item of teams">
+     {{item}}
+  </ion-item>
+  <p></p>
+  <p></p>
+  <ion-item>
+	<button ion-button full (click)="addclick()" style="height:2.8em" color="primary">+ 添加成员</button>
+	</ion-item>
+  </ion-list>
+</ion-content>
+

@@ -1,0 +1,96 @@
+<ion-header>
+	<ion-navbar>
+		<ion-title>{{stage}}</ion-title>
+	</ion-navbar>
+	<ion-segment [(ngModel)]="selectedTab" (click)="selectAll=false;clearSelection();" style="padding:0; margin:0;text-align:center">
+		<ion-segment-button value="待派单" style="padding:0; margin:0;line-height:1.6rem;">
+			<div class="cyclediv pending"></div>待指派<br />({{asscounts}})
+		</ion-segment-button>
+		<ion-segment-button value="待整改" style="padding:0; margin:0;line-height:1.6rem;">
+			<div class="cyclediv assigned"></div>待整改<br />({{forfixcounts}})
+		</ion-segment-button>
+		<ion-segment-button value="已整改" style="padding:0; margin:0;line-height:1.6rem;">
+			<div class="cyclediv processed"></div>已整改<br />({{fixedcounts}})
+		</ion-segment-button>
+		<ion-segment-button value="被退回" style="padding:0; margin:0;line-height:1.6rem;">
+			<div class="cyclediv rejected"></div>被退回<br />({{returncounts}})
+		</ion-segment-button>
+	</ion-segment>
+	<table style="width:100%;" *ngIf="selectedTab == '待整改' || selectedTab == '待派单'">
+		<tr>
+			<td>
+				<ion-item no-lines style="font-size:1.3rem;">
+					<ion-label>全选</ion-label>
+					<ion-checkbox style="margin-right:9px;" [(ngModel)]="selectAll"></ion-checkbox>
+				</ion-item>
+			</td>
+			<td>
+				<button ion-button full color="light" style="font-size:1.3rem; padding:0;" (click)="exportIssues()">导出问题</button>
+			</td>
+			<td *ngIf="selectedTab == '待派单'">
+				<button ion-button full color="default" style="font-size:1.3rem; padding:0;" (click)="changeAssignto()">指派负责人</button>
+			</td>
+			<td *ngIf="selectedTab == '待整改'">
+				<button ion-button full color="default" style="font-size:1.3rem; padding:0;" (click)="changeAssignto()">变更负责人</button>
+			</td>
+			<td *ngIf="selectedTab == '待整改' || selectedTab == '待派单'">
+				<button ion-button full color="secondary" style="font-size:1.3rem; padding:0;" (click)="markCompleted()">整改完成</button>
+			</td>
+		</tr>
+	</table>
+</ion-header>
+<ion-content padding>
+	<div *ngIf="needupd" style="background-color:blue; text-align:center; color:white"> 你有问题未更新 下拉刷新</div>
+	<ion-refresher (ionRefresh)="doRefresh($event)">
+		<ion-refresher-content pullingIcon="arrow-dropdown" pullingText="下拉刷新..." refreshingSpinner="circles" refreshingText="开始加载......">
+		</ion-refresher-content>
+	</ion-refresher>
+	<table style="width:100%;">
+		<tr *ngFor="let issue of getIssues(selectedTab)" style="padding-left:0;">
+			<td>
+				<ion-checkbox style="margin-right:9px;" checked={{selectAll}} [(ngModel)]="issue.selected"></ion-checkbox>
+			</td>
+			<td (click)="showDetail(issue);" style="border-bottom:1px solid silver; border-top:1px solid silver; padding: 5px 0px 5px 0px; color:dimgray;">
+				<!--<p>-->
+				<br/>	
+				<table style="width:100%; font-size:10pt;">
+					<tr style="line-height:18px">
+						<td><span *ngIf="issue.status=='待派单'" style="background-color:purple;width:6px;height:6px;border-radius:2px;display:inline-block;"></span>
+							<span *ngIf="issue.status=='待整改'" style="background-color:red;width:6px;height:6px;border-radius:2px;display:inline-block;"></span>
+							<span *ngIf="issue.status=='已整改'" style="background-color:blue;width:6px;height:6px;border-radius:2px;display:inline-block;"></span>							
+							&nbsp;&nbsp;问题编号: {{issue.issueid}}</td>
+						<td style="text-align:right; color:white;"><span style="background-color:blueviolet;border-radius:3px;" *ngIf="issue.overdays!=undefined && issue.overdays>0">&nbsp;超时{{issue.overdays}}天&nbsp;</span>&nbsp;&nbsp;
+							<span style="background-color:orange;border-radius:3px;" *ngIf="issue.returntimes!=undefined && issue.returntimes>0">&nbsp;退{{issue.returntimes}}次&nbsp;</span></td>
+					</tr>
+				</table>
+				<!--<br/>-->
+				<div style="font-size: 12pt; color:black;  line-height:22px">{{issue.batchname}}&nbsp; 房间: {{issue.buildingname}}-{{issue.roomname}}</div>
+				<div style="line-height:26px">问题:{{issue.position}}-{{issue.checkitem}}-{{issue.IssueDesc}} </div>
+				<table style="width:100%;">
+					<tr style="line-height:26px">
+						<td>负责人: {{issue.ResponsibleName}}</td>
+						<td style="text-align:right;">{{issue.datestr}}: {{issue.date}}</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+
+	<div id="rightDisplay" *ngIf="showflag" class="popover-backdrop" 
+     style="position: fixed;top: 30%;left: 10%;z-index: 0; width: 80%;height: 40%; background-color:#FFCCFF;border-radius:16px;">
+     <p style="text-align:center">提示</p>     
+     <hr style="height:0.5px;border:none;border-top:1px solid #CDC1C5;" />
+     <p>系统将于1分钟内为您生成问题清单文件，文件下载地址:</p>
+     <p><a style="text-decoration: none" href="{{exportissueurl}}"><font color="#488aff">{{exportissueurl}}</font></a></p>        
+      <table style="width:100%;position:absolute; bottom:10%;">
+        <tr>
+          <td width="30%"> 
+            <td>
+              <td><button ion-button color="primary" (click)="copytoclipboard()" clear>复制链接到剪贴板</button>
+          </td>
+          <td width="30%">
+          </td>
+        </tr>        
+      </table>     
+  </div>
+</ion-content>

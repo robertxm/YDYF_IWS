@@ -1,0 +1,23 @@
+
+
+<ion-content no-bounce class="ion-content">
+    <div #canvasDisplay class="canvas-box">
+        <canvas id="myCanvasEditor" (touchstart)="touchStart($event)" (touchmove)="touchMove($event)" (touchend)="touchEnd($event)"></canvas>
+    </div>
+</ion-content>
+
+<ion-footer #footerBar >
+    <ion-toolbar class="ion-footer">
+        <!--<ion-buttons start>
+            <button ion-button (click)="close()">关闭</button>
+        </ion-buttons>
+        <ion-title>编辑照片</ion-title>
+        <ion-buttons end>-->
+        <ion-buttons>
+            <button ion-button (click)="undo()" style="left:0%">撤销</button>            
+            <button ion-button (click)="redclick()" style="left:20%" color="danger" icon-only><ion-icon ios="ios-brush" md="md-brush"></ion-icon></button>      
+            <button ion-button (click)="blueclick()" style="left:25%" color="primary" icon-only><ion-icon ios="ios-brush" md="md-brush"></ion-icon></button>   
+            <button ion-button (click)="confirm()" style="left:50%">确定</button>              
+        </ion-buttons>        
+    </ion-toolbar>
+</ion-footer>

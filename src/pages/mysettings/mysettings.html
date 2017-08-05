@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      我的设置
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+<ion-list>
+    <ion-item detail-push>
+      <ion-label>切换项目</ion-label>
+      <ion-select [(ngModel)]="projname" (ionChange)="projchange($event)" okText="确定" cancelText="取消">
+        <ion-option *ngFor="let item of projnames">{{ item }}</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-toggle [(ngModel)]="networkchecked" (ionChange)="networkchange($event)"></ion-toggle>
+      <ion-label>
+        仅在wifi环境上传、下载数据
+      </ion-label>
+  </ion-item>
+  <ion-item detail-push (click)="clearcacheclick()">
+    <h2>清除数据</h2>        
+  </ion-item>
+  <p></p>
+<p></p>
+<ion-item>
+	<button ion-button full (click)="logoutclick()" style="height:2.8em" color="danger">退出登录</button>
+	</ion-item>
+</ion-list>
+
+</ion-content>

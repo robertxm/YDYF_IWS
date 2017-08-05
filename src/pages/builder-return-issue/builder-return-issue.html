@@ -1,0 +1,31 @@
+<!--
+  Generated template for the BuilderReturnIssue page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>选择退回原因</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+<ion-list radio-group [(ngModel)]="return_message">
+  <ion-item >
+    <ion-label>指派错误（请开发商重新指派承建商）</ion-label>
+    <ion-radio value="appoint_error"></ion-radio>
+  </ion-item>
+  <ion-item>
+    <ion-label>其它</ion-label>
+    <ion-radio value="other"></ion-radio>
+  </ion-item>
+</ion-list>
+</ion-content>
+
+<ion-footer>
+  <button ion-button block (click)="submit()">确定</button>
+</ion-footer>

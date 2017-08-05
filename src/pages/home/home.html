@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>iWS验房</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <h2 padding>项目: Proj00001</h2>
+  
+	<ion-list inset>
+	  <button ion-item *ngFor="let building of buildings" (click)="itemSelected(building.buildingid)">
+		{{building.name}}</button> 
+	</ion-list>
+	<div style="text-align:right;line-height:60px;width:90%; "><button style="background-color:aquamarine;height:24px;" (click)="resetclick()">
+		下载/更新
+	  </button>
+		</div>
+
+</ion-content>
+

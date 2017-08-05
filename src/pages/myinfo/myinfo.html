@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      我的信息
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+<ion-list>
+  <ion-item>
+   {{username}}
+  </ion-item>
+  <ion-item *ngIf="canchangePW" detail-push (click)="changePWclick()">
+    <h2>修改密码</h2>        
+  </ion-item>
+</ion-list>
+</ion-content>
