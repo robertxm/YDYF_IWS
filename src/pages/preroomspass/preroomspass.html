@@ -1,0 +1,26 @@
+﻿<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>通过信息</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+  <ion-list>     
+   <ion-item *ngIf="readonly"><ion-label>通过日期&nbsp;&nbsp;&nbsp;&nbsp;{{receiptInfo.dlvrDate}}</ion-label></ion-item>
+   <ion-item><ion-label>补充说明</ion-label><ion-textarea [readonly] = "readonly"  rows=3 [(ngModel)]="receiptInfo.additionNote"></ion-textarea></ion-item>
+  </ion-list>
+</ion-content>
+<ion-footer>
+  <div id="footbar" *ngIf="readonly==false">
+    <table style="width:100%;">
+      <tr>
+        <td>
+          <button ion-button color="default" full (click)="doSubmit()">提交</button>
+        </td>
+        <td width="130px">
+          <button ion-button color="danger" full (click)="doCancel()">取消</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+</ion-footer>
+
