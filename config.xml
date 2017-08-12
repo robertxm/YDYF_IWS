@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.ionicframework.myapp398494" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>国贸移动验房</name>
-  <description>An awesome Ionic/Cordova app.</description>
-  <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
+<widget id="com.iws.gmydyf" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <name>移动验房</name>
+  <description>A check house app.</description>
+  <author email="hhong@iwstech.com" href="http://www.xmiws.com/">Information Worker Service(Xiamen) Team</author>
   <content src="index.html"/>
   <access origin="*"/>
   <allow-navigation href="http://ionic.local/*"/>

@@ -82,10 +82,10 @@ export class RejectPage {
       this.initBaseDB.updateuploadflag(this.projid, this.batchid, this.buildingid, this.type).then(v2=>{
          this.navCtrl.pop();
       }).catch(er=>{
-        alert("提交失败:"+er);
+        console.log("提交失败:"+er);
       })      
     }).catch(err=>{
-      alert("提交失败:"+err);
+      console.log("提交失败:"+err);
     })
   }
 

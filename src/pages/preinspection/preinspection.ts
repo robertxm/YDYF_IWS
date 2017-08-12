@@ -38,8 +38,7 @@ export class PreinspectionPage {
         this.initbatch();
       } else {
         this.nodata = true;
-        alert("项目或App没授权，请联系系统管理员.");
-        throw '';
+        this.nativeservice.alert("项目或App没授权，请联系系统管理员.");        
       }
     })
   }
@@ -61,6 +60,29 @@ export class PreinspectionPage {
     }).catch(e => {
       this.nativeservice.hideLoading();
     })
+  }
+
+  doRefresh(refresher) {
+    console.log('Begin async operation', refresher);
+    setTimeout(() => {
+      this.nativeservice.showLoading("刷新中，请稍侯...");
+      this.initBaseDB.refreshbatch(this.projid, this.type, this.token, this.versionid).then((batlist: Array<any>) => {
+        if (batlist && batlist.length > 0) {
+          this.batchbuildings = batlist;
+          this.nodata = false;
+          console.log(this.nodata);
+        } else {
+          this.nodata = true;
+        }
+        console.log("initbatch" + this.nodata);
+        console.log(this.batchbuildings);        
+        this.nativeservice.hideLoading();
+        refresher.complete();
+      }).catch(e => {
+        this.nativeservice.hideLoading();
+        refresher.complete();
+      })
+    }, 2000);
   }
 
   itemSelected(batchid, building) {

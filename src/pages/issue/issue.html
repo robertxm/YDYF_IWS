@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>{{buildingname}}{{roomname}}</ion-title>
   </ion-navbar>
 </ion-header>
@@ -24,28 +24,23 @@
         <ion-option *ngFor="let item of itemdescs">{{ item }}</ion-option>
       </ion-select>
     </ion-item>
-  </ion-list>
-  <ion-list>
+  
     <ion-item>
       <ion-input type="text" placeholder="补充说明" height=100px [(ngModel)]="descplus"></ion-input>
     </ion-item>
-  </ion-list>
-
-  <ion-list>
+  
     <ion-item>
       <button *ngIf="images && images.length < 3" ion-button icon-only (click)="cameraclick()">
 	  <ion-icon ios="ios-camera" md="md-camera"></ion-icon>
 	 </button>
-      <ion-thumbnail item-left *ngFor="let item of images" style="margin:5px;min-width:50px;min-height:50px">
+      <ion-thumbnail item-left *ngFor="let item of images" style="margin-left:7px; margin-right:7px;min-width:60px">
         <div style="color:red">
           <ion-icon item-right ios="ios-close" md="md-close" (click)="deleteimage(item)"></ion-icon>
         </div>
-        <img [src]="item" (click)="showBigImage(item)" style="width:50px; height:50px">
+        <img [src]="item" (click)="showBigImage(item)" style="width:60px;">
       </ion-thumbnail>
     </ion-item>
-  </ion-list>
-
-  <ion-list>
+  
     <ion-item>
       <ion-label>紧急程度</ion-label>
       <ion-select [(ngModel)]="uglevel" okText="确定" cancelText="取消">

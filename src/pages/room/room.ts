@@ -6,9 +6,10 @@ import { IssueviewPage } from '../issueview/issueview';
 import { RejectPage } from '../reject/reject';
 import { ReceiptPage } from '../receipt/receipt';
 import { initBaseDB } from '../../providers/initBaseDB';
+import { PreroomspassPage } from '../preroomspass/preroomspass';
 
 @Component({
-	selector: 'page-room',
+	selector: 'page-room',    
 	templateUrl: 'room.html',
 })
 export class RoomPage implements OnInit {
@@ -97,6 +98,14 @@ export class RoomPage implements OnInit {
 		this.navCtrl.push(ReceiptPage, { "readonly": this.readonly, "username": this.username, "roomid": this.roomid, "projid": this.projid, "projname": this.projname, "batchid": this.batchid, "buildingid": this.buildingid, "buildingname": this.buildingname, "roomname": this.roomname, "type": this.type });
 	};
 
+	doPass() {
+		this.navCtrl.push(PreroomspassPage, { "readonly": this.readonly, "username": this.username, "roomid": this.roomid, "projid": this.projid, "projname": this.projname, "batchid": this.batchid, "buildingid": this.buildingid, "buildingname": this.buildingname, "roomname": this.roomname, "type": this.type });
+	};
+
+	Passinfo() {
+		this.navCtrl.push(PreroomspassPage, { "readonly": this.readonly, "username": this.username, "roomid": this.roomid, "projid": this.projid, "projname": this.projname, "batchid": this.batchid, "buildingid": this.buildingid, "buildingname": this.buildingname, "roomname": this.roomname, "type": this.type });
+	};
+
 	drawIssue(issueid: string, issue: any) {
 		let div = document.createElement('div'); console.log(this.dwgFactor);
 		div.style.backgroundColor = this.initBaseDB.getstatuscolor(issue.status);
@@ -154,9 +163,9 @@ export class RoomPage implements OnInit {
 				this.drawIssue(issue.id, issue);
 			});
 		})
-		this.initBaseDB.getroomdetails(this.roomid, this.batchid).then(val => {
+		this.initBaseDB.getroomdetails(this.roomid, this.batchid, this.type).then(val => {
 			if (val) {
-				if (val.rows.item(0).RoomStatus == "已交付") {
+				if (val.rows.item(0).RoomStatus == "已交付" || val.rows.item(0).RoomStatus == "已通过" || val.rows.item(0).RoomStatus == "已接待") {
 					this.readonly = true;
 				}
 			}

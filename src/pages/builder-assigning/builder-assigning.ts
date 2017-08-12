@@ -25,7 +25,7 @@ export class BuilderAssigning {
 
   personclick(id:string){
      if (this.issues == undefined || this.issues.length < 1) {
-      alert("未选择有效的问题，请返回！");
+        alert("未选择有效的问题，请返回！");
     } else {
       for (var i = 0; i < this.issues.length; i++) {
         alert("SET person "+ id + " to " + this.issues[i]);

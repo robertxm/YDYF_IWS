@@ -38,7 +38,7 @@ export class ChangePWPage {
 
   changeclick() {
     if (this.password != this.confirmedpassword)
-      alert("两次输入不一致,请重新输入!");
+      this.nativeservice.alert("两次输入不一致,请重新输入!");
     else {
       this.nativeservice.isConnecting().then((val: boolean) => {
         if (val == true) {

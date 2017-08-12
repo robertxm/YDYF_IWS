@@ -74,6 +74,7 @@ export class MyTeamPage {
   }
 
   getcontacts() {
+    console.log('test');
     let contacts: Array<any>;
     let options: any;
     options = { filter: "", multiple: true };
@@ -99,6 +100,7 @@ export class MyTeamPage {
           }
         }
       });
+    
       this.navCtrl.push(AddphonecontactsPage, { projid: this.projid, items: contacts });
     });
   }

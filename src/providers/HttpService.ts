@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-import {NativeService } from '../providers/nativeservice';
+//import {NativeService } from '../providers/nativeservice';
 
 @Injectable()
 export class HttpService {
 
-  constructor(private http: Http,public nativeservice: NativeService) {
+  constructor(private http: Http) {  //,public nativeservice: NativeService
   }
 
   public get(url: string, paramObj: any) {    
@@ -49,6 +49,10 @@ export class HttpService {
       .catch(error => this.handleError(error));
   }
 
+  public fetchurl(url: string, paramObj: any):string {    
+    return url + this.toQueryString(paramObj);
+  }
+
   private handleSuccessImg(result) {
     let body = result._body;
     let data = JSON.parse(body);    
@@ -56,14 +60,14 @@ export class HttpService {
       return data.data.list;
     }
     else {
-      alert(data.errmsg);
+      console.log(data.errmsg);
     }   
   }
 
   private handleSuccess(result) {
     console.log(result);
     if (result && result[0][0][0] == "false") {//由于和后台约定好,所有请求均返回一个包含success,msg,data三个属性的对象,所以这里可以这样处理
-      alert(result[0][0][1]);//这里使用ToastController
+      console.log(result[0][0][1]);//这里使用ToastController
     }
     else
       return result;
@@ -84,8 +88,8 @@ export class HttpService {
       console.error(msg + '，请检查路径是否正确');
     }
     console.log(error);
-    this.nativeservice.hideLoading();
-    alert(msg);//这里使用ToastController
+    //this.nativeservice.hideLoading();
+    console.log(msg);//这里使用ToastController
     //return { success: false, msg: msg };
     throw msg;
   }

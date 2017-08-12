@@ -45,7 +45,6 @@ export class AddmembermanualPage {
             console.log(res[0][0][1]);
           }
         }).catch(e => {
-          alert(e);
           console.log(e);
         })
       }

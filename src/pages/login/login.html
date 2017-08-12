@@ -11,7 +11,7 @@
   <ion-list>
 
     <ion-item>
-      <ion-img width="100%" height="{{imgheight}}" src="assets/img/login.jpg"></ion-img>
+      <img width="100%"  src="assets/img/login.jpg" />
     </ion-item>    
    
     <ion-item>
@@ -21,15 +21,19 @@
 
 
     <ion-item>
-      <ion-label color="primary" fixed>密  码</ion-label>
+      <ion-label color="primary" fixed>密   码</ion-label>
       <ion-input type="password" placeholder="输入密码" clearInput [(ngModel)]="password"></ion-input>
     </ion-item>
 
     <ion-item>
-      <button ion-button block (click)="loginclick()" style="height:4em">登 录</button>
-    </ion-item>
+      <button ion-button block (click)="loginclick()" style="height:4em;font-size:14px">登 录</button>
+    </ion-item >
+
+
+	
 
   </ion-list>  
+  </ion-content>
   <!--<ion-item>
       <ion-label left>整改前照片</ion-label>
       s
@@ -83,4 +87,4 @@
     </ion-segment-button>
   </ion-segment>-->
 
-</ion-content>
+

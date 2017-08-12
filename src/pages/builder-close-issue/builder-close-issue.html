@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>整改完成</ion-title>
   </ion-navbar>
 </ion-header>
@@ -14,23 +14,24 @@
       </ion-label>
     </ion-item>-->
     <ion-item>
-      <ion-label left>整改前照片</ion-label>
-      <ion-thumbnail item-right *ngFor="let item of images" style="margin:5px;min-width:50px;min-height:50px">
+      整改前照片
+      <img *ngFor="let item of images" [src]="item" style="width:60px; margin-left:7px; margin-right:7px; height:60px" (click)="showBigImage(item,0)" />
+      <!-- <ion-thumbnail item-right *ngFor="let item of images" style="margin:5px;min-width:50px;min-height:50px">
         <img [src]="item" (click)="showBigImage(item,0)" style="width:50px; height:50px"/>
-      </ion-thumbnail>      
+      </ion-thumbnail>       -->
     </ion-item>
 
-    <ion-item>整改后照片
-      <!--<ion-label fixed>整改后照片</ion-label>-->
-      <button left *ngIf="imagesfixed && imagesfixed.length < 3" ion-button icon-only (click)="cameraclick()">
-	  <ion-icon ios="ios-camera" md="md-camera"></ion-icon>
-	 </button>
-      <ion-thumbnail item-right *ngFor="let item of imagesfixed" style="margin:5px;min-width:50px;min-height:50px">
+    <ion-item>
+      <ion-label fixed>整改后照片</ion-label> 
+      <ion-thumbnail item-left *ngFor="let item of imagesfixed" style="margin-left:7px; margin-right:7px;min-width:60px;min-height:60px">
         <div style="color:red">
           <ion-icon item-right ios="ios-close" md="md-close" (click)="deleteimage(item)"></ion-icon>
         </div>
-        <img [src]="item" (click)="showBigImage(item,1)"  style="width:50px; height:50px">
+        <img [src]="item" (click)="showBigImage(item,1)"  style="width:60px; height:60px">
       </ion-thumbnail>
+      <button item-right *ngIf="imagesfixed && imagesfixed.length < 3" ion-button icon-only (click)="cameraclick()">
+	  <ion-icon ios="ios-camera" md="md-camera"></ion-icon>
+	 </button>
     </ion-item>
 
     <!--<ion-item class="item-input">

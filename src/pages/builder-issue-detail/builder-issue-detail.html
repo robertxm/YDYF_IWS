@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>问题详情</ion-title>
   </ion-navbar>
   <div style="width:100%; background:#f7f7f7; padding:5px 15px 5px 15px; border-top:1px solid #cccccc;">
@@ -45,20 +45,22 @@
       <ion-input value="{{issue.IssueDesc}}" readonly></ion-input>
     </ion-item>
     <ion-item class="item-input">
-      <ion-label fixed>整改前照片</ion-label>
+      整改前照片
+      <img *ngFor="let item of images" [src]="item" style="width:60px; margin-left:7px; margin-right:7px; height:60px" (click)="showBigImage(item,0)" />
       <!--<ion-label item-right style="margin:0.8px 0px 0px 0px;"></ion-label>-->
-      <ion-thumbnail item-right *ngFor="let item of images" style="margin:5px;min-width:50px;min-height:50px">
+      <!-- <ion-thumbnail item-right *ngFor="let item of images" style="margin:5px;min-width:50px;min-height:50px">
         <img [src]="item" (click)="showBigImage(item,0)" style="width:50px; height:50px" />
-      </ion-thumbnail>
+      </ion-thumbnail> -->
       <!--<img *ngFor="let item of images" height="48" [src]="item" style="margin:0 0 0 8px;" (click)="showBigImage(item)"/>-->
 
     </ion-item>
     <ion-item class="item-input">
-      <ion-label fixed>整改后照片</ion-label>
+      整改后照片
+      <img *ngFor="let item of imagesfixed" [src]="item" style="width:60px; margin-left:7px; margin-right:7px; height:60px" (click)="showBigImage(item,1)" />
       <!--<ion-label item-right style="margin:0.8px 0px 0px 0px;"></ion-label>-->
-      <ion-thumbnail item-right *ngFor="let item of imagesfixed" style="margin:5px;min-width:50px;min-height:50px">
+      <!-- <ion-thumbnail item-right *ngFor="let item of imagesfixed" style="margin:5px;min-width:50px;min-height:50px">
         <img [src]="item" (click)="showBigImage(item,1)" style="width:50px; height:50px" />
-      </ion-thumbnail>
+      </ion-thumbnail> -->
       <!--<img *ngFor="let item of imagesfixed" height="48" [src]="item" style="margin:0 0 0 8px;" (click)="showBigImage(item)"/>-->
 
     </ion-item>
@@ -85,7 +87,7 @@
     </ion-item>
     <ion-item>
       <ion-label fixed>整改时间</ion-label>
-      <ion-input value="{{fixedtime}}" readonly color="danger"></ion-input>
+      <ion-input value="{{fixedtime}}" readonly style='color:red'></ion-input>
     </ion-item>
 
     <ion-item-divider color="light" *ngIf="return_log!=undefined && return_log.length >= 1">退回信息</ion-item-divider>
@@ -102,11 +104,11 @@
 <ion-footer>
   <table style="width:100%;" *ngIf="issue.status != '已整改'">
     <tr>
-      <td *ngIf="issue.status != '待派单'">
-        <button ion-button full color="light" (click)="returnassign()">退回</button>
+      <td>
+        <button ion-button full color="danger" (click)="returnassign()">退回</button>
       </td>
       <td *ngIf="issue.status == '待派单'">
-        <button ion-button full color="primary" (click)="assignchange()">变更负责人</button>
+        <button ion-button full color="primary" (click)="assignchange()">指派负责人</button>
       </td>
       <td *ngIf="issue.status == '待整改'">
         <button ion-button full color="primary" (click)="assignchange()">变更负责人</button>

@@ -26,7 +26,10 @@ export class IssueclosedPage {
 			quality: 90,
 			destinationType: this.camera.DestinationType.DATA_URL,
 			encodingType: this.camera.EncodingType.JPEG,
-			mediaType: this.camera.MediaType.PICTURE
+			mediaType: this.camera.MediaType.PICTURE,
+			correctOrientation: true,
+			targetHeight:800,
+			targetWidth:480
 		}
 
 		this.camera.getPicture(options).then((imageData) => {
@@ -77,4 +80,11 @@ export class IssueclosedPage {
 		this.viewCtrl.dismiss(results);
 	}
 
+	close() {
+        this.viewCtrl.dismiss();
+    }
+
+	cancel() {
+		this.close();
+	}
 }

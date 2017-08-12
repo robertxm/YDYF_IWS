@@ -3,16 +3,18 @@
   */
 import { Injectable } from '@angular/core';
 import { ToastController, LoadingController, Platform, Loading, AlertController } from 'ionic-angular';
-import {AppVersion} from '@ionic-native/app-version';
-import {File} from '@ionic-native/file';
-import {FileTransfer, FileTransferObject} from '@ionic-native/file-transfer';
-import {InAppBrowser} from '@ionic-native/in-app-browser';
+import { AppVersion } from '@ionic-native/app-version';
+import { File } from '@ionic-native/file';
+import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Network } from '@ionic-native/network';
 import { Dialogs } from '@ionic-native/dialogs';
 import { Toast } from '@ionic-native/toast';
-import { LocalStorage } from '../providers/local-storage';
+import { LocalStorage } from './local-storage';
 //import {Position} from "../../typings/index";
-import {APP_DOWNLOAD, APK_DOWNLOAD} from "./Constants";
+import { APP_DOWNLOAD, APK_DOWNLOAD, APP_SERVE_URL } from "./Constants";
+import { HttpService } from './HttpService';
+import { FileOpener } from '@ionic-native/file-opener';
 
 declare var LocationPlugin;
 declare var AMapNavigation;
@@ -22,7 +24,7 @@ declare var cordova: any;
 
 export class NativeService {
   private loading: Loading;
-  private loadingIsOpen: boolean = false; 
+  private loadingIsOpen: boolean = false;
   constructor(private platform: Platform,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
@@ -32,7 +34,7 @@ export class NativeService {
     private inAppBrowser: InAppBrowser,
     private network: Network,
     private dialogs: Dialogs,
-    private toast: Toast, public localStorage: LocalStorage,
+    private toast: Toast, public localStorage: LocalStorage, private httpService: HttpService, private fileOpener: FileOpener,
     private loadingCtrl: LoadingController) {
   }
 
@@ -40,6 +42,9 @@ export class NativeService {
     console.log('%cNativeService/' + info, 'color:#e8c406');
   }
 
+  alert(info): Promise<any> {
+    return this.dialogs.alert(info, "提示", "确定")
+  }
 
   /**
    * 通过浏览器打开url
@@ -51,50 +56,104 @@ export class NativeService {
   /**
    * 检查app是否需要升级
    */
-  detectionUpgrade() {
+  detection(token): Promise<any> {
     //这里连接后台判断是否需要升级,不需要升级就return
-    this.alertCtrl.create({
-      title: '升级',
-      subTitle: '发现新版本,是否立即升级？',
-      buttons: [{text: '取消'},
-        {
-          text: '确定',
-          handler: () => {
-            this.downloadApp();
-          }
-        }
-      ]
-    }).present();
+    let devstr = "";
+    if (this.isAndroid()) {
+      devstr = "android";
+    } else if (this.isIos()) {
+      devstr = "ios";
+    }
+    return this.httpService.get(APP_SERVE_URL + '/AppPack', { Token: token, type: devstr }).then(val => {
+      console.log(val);
+      let newversion = "";
+      if (val && val.length > 0) {
+        newversion = val[0][1][1];
+        console.log(newversion);
+        return newversion;
+      } else {
+        return newversion;
+      }
+    })
   }
+
+  // detectionUpgrade(token) {
+  //   //这里连接后台判断是否需要升级,不需要升级就return
+  //   let devstr = "";
+  //   if (this.isAndroid()) {
+  //     devstr = "android";
+  //   } else if (this.isIos()) {
+  //     devstr = "ios";
+  //   } else {
+  //     return '';
+  //   }
+  //   let appversion = "";
+  //   this.getVersionNumber().then(v => {
+  //     appversion = v;
+  //     this.httpService.get(APP_SERVE_URL + '/AppPack', { Token: token, type: devstr }).then(val => {
+  //       console.log(val);
+  //       let newversion = "";
+  //       if (val && val.length > 0) {
+  //         newversion = val[0][1][1];
+  //         console.log(appversion); console.log(newversion);
+  //         if (newversion != appversion) {
+  //           this.alertCtrl.create({
+  //             title: '升级',
+  //             subTitle: '发现新版本,是否立即升级？',
+  //             buttons: [{ text: '取消' },
+  //             {
+  //               text: '确定',
+  //               handler: () => {
+  //                 this.downloadApp(token);
+  //               }
+  //             }
+  //             ]
+  //           }).present();
+  //         }
+  //       }
+  //     })
+  //   })
+  // }
 
   /**
    * 下载安装app
    */
-  downloadApp() {
+  downloadApp(token) {
     if (this.isAndroid()) {
-      let alert = this.alertCtrl.create({
-        title: '下载进度：0%',
-        enableBackdropDismiss: false,
-        buttons: ['后台下载']
-      });
-      alert.present();
+      let url = "";
+      this.httpService.get(APK_DOWNLOAD, { token: token }).then(val => {
+        if (val && val.length > 0) {
+          url = APP_SERVE_URL.replace('/api', '') + val[0][1][0];
+          console.log("url:" + url);
+          let alert = this.alertCtrl.create({
+            title: '下载进度：0%',
+            enableBackdropDismiss: false,
+            buttons: ['后台下载']
+          });
+          alert.present();
 
-      const fileTransfer: FileTransferObject = this.transfer.create();
-      const apk = this.file.externalRootDirectory  + 'android.apk'; //apk保存的目录
+          const fileTransfer: FileTransferObject = this.transfer.create();
+          const apk = this.file.externalRootDirectory + 'android.apk'; //apk保存的目录
+          console.log(apk);
+          fileTransfer.download(url, apk).then(() => {
+            //window['INSTALL'].install(apk.replace('file://', ''));
+            this.fileOpener.open(apk.replace('file://',''), 'application/vnd.android.package-archive')
+              .then(() => console.log('File is opened'))
+              .catch(e => console.log('Error openening file', e));
+          });
 
-      fileTransfer.download(APK_DOWNLOAD, apk).then(() => {
-        window['install'].install(apk.replace('file://', ''));
-      });
-
-      fileTransfer.onProgress((event: ProgressEvent) => {
-        let num = Math.floor(event.loaded / event.total * 100);
-        if (num === 100) {
-          alert.dismiss();
-        } else {
-          let title = document.getElementsByClassName('alert-title')[0];
-          title && (title.innerHTML = '下载进度：' + num + '%');
+          fileTransfer.onProgress((event: ProgressEvent) => {
+            let num = Math.floor(event.loaded / event.total * 100);
+            if (num === 100) {
+              alert.dismiss();
+            } else {
+              let title = document.getElementsByClassName('alert-title')[0];
+              title && (title.innerHTML = '下载进度：' + num + '%');
+            }
+          });
         }
-      });
+      })
+
     } else if (this.isIos()) {
       this.openUrlByBrowser(APP_DOWNLOAD);
     }
@@ -198,7 +257,7 @@ export class NativeService {
         let networktype = this.getNetworkType();
         resolve(networktype);
       });
-      
+
       resolve(promise.then((networktype) => {
         console.log(networktype);
         if (networktype == 'none') {
@@ -209,7 +268,7 @@ export class NativeService {
           return true;
         else {
           console.log("checknetwork");
-          this.dialogs.confirm('你正使用2g/3g/4g/网络，是否同意上传和下载?', '', ['不允许', '同意'])
+          return this.dialogs.confirm('你正使用2g/3g/4g/网络，是否同意上传和下载?', '', ['不允许', '同意'])
             .then(val => {
               if (val = 2) {
                 console.log("ok checknetwork");
@@ -294,20 +353,20 @@ export class NativeService {
 
   base64decode(str) {
     let base64DecodeChars = new Array(
-      　　-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-      　　-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-      　　-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63,
-      　　52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1,
-      　　-1, 　0, 　1, 　2, 　3, 4, 　5, 　6, 　7, 　8, 　9, 10, 11, 12, 13, 14,
-      　　15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1,
-      　　-1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-      　　41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1);
-    　　var c1, c2, c3, c4;
-    　　var i, len, out;
-    　　len = str.length;
-    　　i = 0;
-    　　out = "";
-    　　while (i < len) {
+      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63,
+      52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1,
+      -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+      15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1,
+      -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+      41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1);
+    var c1, c2, c3, c4;
+    var i, len, out;
+    len = str.length;
+    i = 0;
+    out = "";
+    while (i < len) {
       /* c1 */
       do {
         c1 = base64DecodeChars[str.charCodeAt(i++) & 0xff];
@@ -325,7 +384,7 @@ export class NativeService {
       do {
         c3 = str.charCodeAt(i++) & 0xff;
         if (c3 == 61)
-          　return out;
+          return out;
         c3 = base64DecodeChars[c3];
       } while (i < len && c3 == -1);
       if (c3 == -1)
@@ -335,14 +394,14 @@ export class NativeService {
       do {
         c4 = str.charCodeAt(i++) & 0xff;
         if (c4 == 61)
-          　return out;
+          return out;
         c4 = base64DecodeChars[c4];
       } while (i < len && c4 == -1);
       if (c4 == -1)
         break;
       out += String.fromCharCode(((c3 & 0x03) << 6) | c4);
-    　　}
-    　　return out;
+    }
+    return out;
   }
   /**
    * 获得app包名/id,如com.kit.ionic2tabs

@@ -22,10 +22,6 @@ export class AddphonecontactsPage {
     this.localStorage.getItem("curuser").then(val => {
       this.token = val.token;
     })
-    // this.items.push({name:'name1', phone:'234576890198', added: false, btnname: "添加"});
-    // this.items.push({name:'name2', phone:'221576890198', added: true, btnname: "已添加"});
-    // this.items.push({name:'name3', phone:'323576890198', added: true, btnname: "已添加"});
-    // this.items.push({name:'name4', phone:'438576890198', added: false, btnname: "添加"});
   }
 
   addclick(item) {
@@ -44,7 +40,6 @@ export class AddphonecontactsPage {
               this.items[i].btnname = "已添加";
               this.nativeservice.showToast("添加成功.");
             }).catch(e => {
-              alert(e);
               console.log(e);
             })
           }
@@ -53,7 +48,6 @@ export class AddphonecontactsPage {
             console.log(res[0][0][1]);
           }
         }).catch(e => {
-          alert(e);
           console.log(e);
         })
       }

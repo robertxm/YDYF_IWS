@@ -10,6 +10,7 @@ import { HttpService } from '../../providers/HttpService';
 import { BuilderTabsPage } from '../buildertabs/buildertabs';
 import { ChangePWPage } from '../changepw/changepw';
  //import { ShowimgPage } from '../imageeditor/showimg';
+//import { AboutPage } from '../about/about';
 
 @Component({
   selector: 'page-login',
@@ -20,7 +21,7 @@ export class LoginPage {
   userid: string;
   password: string; 
   
-  // images:Array<any>;
+   //images:Array<any> = [];
   constructor(public navCtrl: NavController, public alertCtrl: AlertController, public localStorage: LocalStorage, public initBaseDB: initBaseDB,
     public nativeservice: NativeService, private httpService: HttpService) {
     console.log("login start app");  
@@ -32,7 +33,9 @@ export class LoginPage {
         console.log(val.userid);
       }
     })
-
+  
+    // this.images.push("assets/img/login.jpg");
+    // this.images.push("assets/img/login.jpg");
     // console.log(this.nativeservice.encode64("12345678902$123456csA10fdB1ewA20"));
     // console.log(this.nativeservice.base64decode(this.nativeservice.encode64("12345678902$123456csA10fdB1ewA20")));
     // let userrole = [];
@@ -60,6 +63,7 @@ export class LoginPage {
   }
   
   loginclick() {    
+    //this.navCtrl.push(AboutPage);
     //this.navCtrl.push(ShowimgPage,{ imgdata: ["assets/img/b1f2-103.jpg","assets/img/login.jpg"], num:1 });
     // this.images = [];
     // this.images.push(imageName);
@@ -109,6 +113,7 @@ export class LoginPage {
     // console.log(w.toLocaleString());
     // console.log(t.toLocaleString());
     // console.log(t.toTimeString());
+    
     this.nativeservice.isConnecting().then((val: boolean) => {
       if (val == false) {
         throw '无网络登陆失败';
@@ -128,12 +133,6 @@ export class LoginPage {
       }
     })
   }
-  // //点击图片放大
-	// showBigImage(imageName) {  //传递一个参数（图片的URl）
-	// 	this.navCtrl.push(ShowimgPage, { imgdata: imageName });
-	// 	//this.url = imageName;                   //$scope定义一个变量Url，这里会在大图出现后再次点击隐藏大图使用
-	// 	//this.bigImage = true;                   //显示大图		
-	// }
   
 
   initData(items): Promise<any> {
@@ -162,8 +161,11 @@ export class LoginPage {
         return this.initBaseDB.initdb(this.userid + ".db", false);
       }).then((v3) => {
         if (item.VendRole == false && userrole.indexOf('A1') == -1){
-          alert("没有APP授权，请联系管理员.");
-          return "no proj";
+          return this.nativeservice.alert("没有APP授权，请联系管理员.").then(v=>{
+            return "no proj";
+          }).catch(e=>{
+            return "no proj";
+          })          
         } else {
           return this.initBaseDB.initProjVersion(item.Token, item.VendRole);
         }        
@@ -237,61 +239,6 @@ export class LoginPage {
       // }
     })
   }
-
-
-  // test(): Promise<any> {
-  //   //this.initBaseTable("projver", "Projid,version integer");
-  //   //this.initBaseTable("buildingupdver", "Projid,Building,Batchname,Version integer,Type integer");  
-  //   return new Promise((resolve) => {
-  //     let promise = new Promise((resolve) => {
-  //       resolve(100);
-  //     });
-  //     resolve(promise.then((v1: number) => {
-  //       console.log("v1");
-  //       return v1 * 2;
-  //     }).then((v2) => {
-  //       console.log("v2");
-  //       var pp = [];
-  //       var promise2 = Promise.resolve([]);
-  //       for (var i = 0; i < 10; i++) {
-  //         console.log(i)
-  //         promise2 = promise2.then(vx => {
-  //           return this.localStorage.getItem('dwgb1f2-103');              
-  //         }).then(vxx => {
-  //           console.log(vxx);
-  //           let v:any; v = vxx;
-  //           let a: Array<any>; a = [];
-  //             a = v.areas;
-  //             let x: string; x = '';
-  //             for (let j = 0; j < a.length; j++) {
-  //               //console.log(a[j].name);
-  //               x = x + a[j].name;
-  //               console.log('j'+j);
-  //             }
-  //           console.log(pp);
-  //           pp.push(x);
-  //           return pp;
-  //         });
-  //       }
-  //       console.log('v2 end');
-  //       console.log(pp);
-  //       return promise2;
-  //     }).then((v3) => {
-  //       console.log("v3"+v3);
-  //       return v3;
-  //     }).then((v4) => {
-  //       console.log("v4");
-  //       return v4;
-  //     }).then((v5) => {
-  //       console.log("v5");
-  //       return v5;
-  //     }).catch(err => {
-  //       console.log(err);
-  //     }))
-
-  //   })
-  // }
-  
   
 
 }

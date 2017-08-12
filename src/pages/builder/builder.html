@@ -52,7 +52,7 @@
 			</td>
 			<td (click)="showDetail(issue);" style="border-bottom:1px solid silver; border-top:1px solid silver; padding: 5px 0px 5px 0px; color:dimgray;">
 				<!--<p>-->
-				<br/>	
+				<!-- <br/>	 -->
 				<table style="width:100%; font-size:10pt;">
 					<tr style="line-height:18px">
 						<td><span *ngIf="issue.status=='待派单'" style="background-color:purple;width:6px;height:6px;border-radius:2px;display:inline-block;"></span>
@@ -67,9 +67,9 @@
 				<div style="font-size: 12pt; color:black;  line-height:22px">{{issue.batchname}}&nbsp; 房间: {{issue.buildingname}}-{{issue.roomname}}</div>
 				<div style="line-height:26px">问题:{{issue.position}}-{{issue.checkitem}}-{{issue.IssueDesc}} </div>
 				<table style="width:100%;">
-					<tr style="line-height:26px">
-						<td>负责人: {{issue.ResponsibleName}}</td>
-						<td style="text-align:right;">{{issue.datestr}}: {{issue.date}}</td>
+					<tr style="line-height:24px">
+						<td>负责人:{{issue.ResponsibleName}}</td>
+						<td style="text-align:right;">{{issue.datestr}}:{{issue.date}}</td>
 					</tr>
 				</table>
 			</td>

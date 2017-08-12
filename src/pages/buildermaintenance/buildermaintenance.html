@@ -1,5 +1,4 @@
 <ion-header>
-
 	<ion-navbar>
 		<ion-title>{{stage}}</ion-title>
 	</ion-navbar>
@@ -28,10 +27,13 @@
 			<td>
 				<button ion-button full color="light" style="font-size:1.3rem; padding:0;" (click)="exportIssues()">导出问题</button>
 			</td>
-			<td>
-				<button ion-button full color="default" style="font-size:1.3rem; padding:0;" (click)="changeAssignto()">变更负责人</button>
+			<td *ngIf="selectedTab == '待派单'">
+				<button ion-button full color="default" style="font-size:1.3rem; padding:0;" (click)="changeAssignto()">指派负责人</button>
 			</td>
 			<td *ngIf="selectedTab == '待整改'">
+				<button ion-button full color="default" style="font-size:1.3rem; padding:0;" (click)="changeAssignto()">变更负责人</button>
+			</td>
+			<td *ngIf="selectedTab == '待整改' || selectedTab == '待派单'">
 				<button ion-button full color="secondary" style="font-size:1.3rem; padding:0;" (click)="markCompleted()">整改完成</button>
 			</td>
 		</tr>
@@ -50,8 +52,9 @@
 			</td>
 			<td (click)="showDetail(issue);" style="border-bottom:1px solid silver; border-top:1px solid silver; padding: 5px 0px 5px 0px; color:dimgray;">
 				<!--<p>-->
-				<table style="width:100%; font-size:8pt;">
-					<tr>
+				<!-- <br/>	 -->
+				<table style="width:100%; font-size:10pt;">
+					<tr style="line-height:18px">
 						<td><span *ngIf="issue.status=='待派单'" style="background-color:purple;width:6px;height:6px;border-radius:2px;display:inline-block;"></span>
 							<span *ngIf="issue.status=='待整改'" style="background-color:red;width:6px;height:6px;border-radius:2px;display:inline-block;"></span>
 							<span *ngIf="issue.status=='已整改'" style="background-color:blue;width:6px;height:6px;border-radius:2px;display:inline-block;"></span>							
@@ -60,11 +63,11 @@
 							<span style="background-color:orange;border-radius:3px;" *ngIf="issue.returntimes!=undefined && issue.returntimes>0">&nbsp;退{{issue.returntimes}}次&nbsp;</span></td>
 					</tr>
 				</table>
-				<br/>
-				<div style="font-size: 12pt; color:black;">{{issue.batchname}}&nbsp; 房间: {{issue.buildingname}}-{{issue.roomname}}</div>
-				<div>问题:{{issue.position}}-{{issue.checkitem}}-{{issue.IssueDesc}} </div>
-				<table style="width:100%">
-					<tr>
+				<!--<br/>-->
+				<div style="font-size: 12pt; color:black;  line-height:22px">{{issue.batchname}}&nbsp; 房间: {{issue.buildingname}}-{{issue.roomname}}</div>
+				<div style="line-height:26px">问题:{{issue.position}}-{{issue.checkitem}}-{{issue.IssueDesc}} </div>
+				<table style="width:100%;">
+					<tr style="line-height:26px">
 						<td>负责人: {{issue.ResponsibleName}}</td>
 						<td style="text-align:right;">{{issue.datestr}}: {{issue.date}}</td>
 					</tr>

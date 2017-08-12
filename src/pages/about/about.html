@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>
       关于
     </ion-title>
@@ -7,25 +7,29 @@
 </ion-header>
 
 <ion-content padding>
-<!--<ion-list>
+
+  <ion-item no-lines style="text-align:center">
+    <img width="50%" src="assets/img/srcode.jpg" />
+    <h4>移动验房 版本 {{appversion}}</h4>
+  </ion-item>
+  <ion-list>
     <ion-item>
-     
+      <ion-label fixed>客服电话</ion-label>
+      <ion-label>0592-5962617</ion-label>
     </ion-item>
-    <p></p>
-    <p></p>    
-    <ion-item *ngIf="vendrole" detail-push (click)="myteamclick()">
-      <ion-icon ios="ios-contacts" md="md-contacts" item-left color="royal"></ion-icon>
-      <h2>我的团队</h2>
+    <ion-item>
+      <ion-label fixed>微信号</ion-label>
+      <ion-label>IWS-XM</ion-label>
     </ion-item>
-    <p></p>
-    <p></p>
-    <ion-item detail-push (click)="mysettingsclick()">
-      <ion-icon ios="ios-settings" md="md-settings" item-left color="energized"></ion-icon>
-      <h2>设置</h2>
+    <ion-item>
+      <ion-label fixed>软件更新</ion-label>
+      <ion-label (click)="download()">{{versionstr}}</ion-label>
     </ion-item>
-    <ion-item detail-push (click)="aboutclick()">
-      <ion-icon ios="ios-information-circle" md="md-information-circle" item-left color="primary"></ion-icon>
-      <h2>关于国贸移动验房</h2>
-    </ion-item>
-  </ion-list>-->
+  </ion-list>
 </ion-content>
+
+<ion-footer>
+  <ion-title>
+
+  </ion-title>
+</ion-footer>

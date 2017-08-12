@@ -1,8 +1,8 @@
 {
-  "name": "ionic-hello-world",
-  "version": "0.0.0",
-  "author": "Ionic Framework",
-  "homepage": "http://ionicframework.com/",
+  "name": "xmiws-ydyf",
+  "version": "0.0.1",
+  "author": "xmiws team",
+  "homepage": "http://www.xmiws.com/",
   "private": true,
   "scripts": {
     "clean": "ionic-app-scripts clean",
@@ -26,6 +26,7 @@
     "@ionic-native/core": "^3.6.0",
     "@ionic-native/dialogs": "^3.12.1",
     "@ionic-native/file": "^4.1.0",
+    "@ionic-native/file-opener": "^4.1.0",
     "@ionic-native/file-transfer": "^4.1.0",
     "@ionic-native/http": "^3.10.3",
     "@ionic-native/in-app-browser": "^4.1.0",

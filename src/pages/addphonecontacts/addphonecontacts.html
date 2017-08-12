@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>
       选择成员
     </ion-title>
@@ -9,7 +9,8 @@
 <ion-content>
   <ion-list>
     <ion-item *ngFor="let item of items">    
-    <h2>{{item.name}}  {{item.phone}}</h2>
+    <!-- <h2>{{item.name}}  {{item.phone}}</h2> -->
+    <ion-input type="text" [(ngModel)]="item.name" ></ion-input><span style="width:60%;" item-right>{{item.phone}}</span>
     <button *ngIf="item.added===false" ion-button clear item-right (click)="addclick(item)" outline>{{item.btnname}}</button>
     <button *ngIf="item.added" ion-button clear item-right color='stable'>{{item.btnname}}</button>
   </ion-item>

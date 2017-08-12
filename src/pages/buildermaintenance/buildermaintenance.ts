@@ -105,7 +105,7 @@ export class BuildermaintenancePage {
         }
       })
     } else {
-      alert("请先选择要处理的问题项.");
+      this.nativeservice.alert("请先选择要处理的问题项.");
     }
   }
 
@@ -118,7 +118,7 @@ export class BuildermaintenancePage {
         this.nativeservice.showToast("复制成功.");        
       },
       (reject: string) => {
-        alert('Error: ' + reject);
+        this.nativeservice.alert('错误: ' + reject);
       }
     );
   }
@@ -132,7 +132,7 @@ export class BuildermaintenancePage {
     if (this.existsSeletedIssues()) {
       this.presentActionSheet();
     } else {
-      alert("请先选择要处理的问题项.");
+      this.nativeservice.alert("请先选择要处理的问题项.");
     }
   }
 
@@ -203,7 +203,7 @@ export class BuildermaintenancePage {
         }
       })
     } else {
-      alert("请先选择要处理的问题项.");
+      this.nativeservice.alert("请先选择要处理的问题项.");
     }
 
   }
@@ -258,11 +258,17 @@ export class BuildermaintenancePage {
         if (val && val != null) {
           this.projid = val.projid; this.projname = val.projname;
           if (val.needupd == 1){
-            this.nativeservice.showLoading("正在下载基础数据,请稍侯...")
-            return this.initBaseDB.downloadbuilderdata(this.token, this.projid);
+            return this.nativeservice.isConnecting().then(val => {
+              if (val == true) {
+                this.nativeservice.showLoading("正在下载基础数据,请稍侯...")
+                return this.initBaseDB.downloadbuilderdata(this.token, this.projid);
+              } else {
+                return 1;
+              }
+            })
           } else {
             return 1;
-          }          
+          }
         } else {
           this.nativeservice.showToast("没有需要整改的项目问题")
           throw '';

@@ -287,7 +287,7 @@ export class initBaseDB {
             }
 
           }).catch(e => {
-            alert("项目加载错误：" + JSON.stringify(e));
+            console.log("项目加载错误：" + JSON.stringify(e));
           })
         }
         else {
@@ -314,7 +314,7 @@ export class initBaseDB {
                   })
                 }
               }).catch(e => {
-                alert("项目加载错误：" + JSON.stringify(e));
+                console.log("项目加载错误：" + JSON.stringify(e));
               })
             }
             else {
@@ -339,7 +339,7 @@ export class initBaseDB {
               }
             }
           }).catch(e => {
-            alert("项目加载错误：" + JSON.stringify(e));
+            console.log("项目加载错误：" + JSON.stringify(e));
           })
         }
       })
@@ -514,6 +514,13 @@ export class initBaseDB {
               }).then((v4) => {
                 console.log("v4");
                 return this.db.executeSql("update buildingversion set needupd = 1 where exists (select * from tmpbuildingversion where buildingversion.projid = tmpbuildingversion.projid and buildingversion.buildingid = tmpbuildingversion.buildingid and buildingversion.batchid = tmpbuildingversion.batchid and buildingversion.versionid != tmpbuildingversion.versionid)", []);
+              }).then((v55) => {
+                console.log("v55");
+                return this.db.executeSql("select * from tmpbuildingversion", []).then(v => {
+                  for (let i = 0; i < v.rows.length; i++) {
+                    console.log(v.rows.item(i));
+                  }
+                })
               }).then((v5) => {
                 console.log("v5");
                 return this.db.executeSql("update buildingversion set needdownload = 1 where exists (select projid from tmpbuildingversion where buildingversion.projid = tmpbuildingversion.projid and buildingversion.buildingid = tmpbuildingversion.buildingid and buildingversion.batchid = tmpbuildingversion.batchid and buildingversion.downloadversionId != tmpbuildingversion.downloadversionId)", []);
@@ -619,16 +626,24 @@ export class initBaseDB {
             }).then((v8) => {
               return this.initBaseTable("uplServiceCheckIssues", "BatchId,IssueId,RoomId,PositionId,CheckItemId,PlusDesc,IssueDesc,UrgencyId,ImgBefore1,ImgBefore2,ImgBefore3,ImgAfter1,ImgAfter2,ImgAfter3,Id primary key,IssueStatus,VendId,ResponVendId,ProjId,Manager,ResponsibleId,IssueType,RegisterDate datetime,AppointDate datetime,LimitDate datetime,ReFormDate datetime,CloseDate datetime,CloseReason,CancelDate datetime,CancelReason,VersionId integer,ImgClose1,ImgClose2,ImgClose3,ReturnDate datetime,ReturnReason,ReturnNum integer,BuildingId,EngineerId,ReviewDate datetime,x integer,y integer,ResponsibleName,ResponsiblePhone,EngineerName,EngineerPhone,ManagerName,ManagerPhone,ReassignDate,ReassignDesc,ReasonbyOver,fixedDesc");
             }).then((v9) => {
-              return this.initBaseTable("CustRoomSatisfactions", "RoomId,SatisfiedDim,HousingType,Score integer default 5,ProjId,VersionId integer,Id,BatchId,Buildingid");
+              return this.initBaseTable("CustRoomSatisfactions", "RoomId,SatisfiedDim,Type integer,Score integer default 5,ProjId,VersionId integer,Id,BatchId,Buildingid");
             }).then((v10) => {
-              return this.initBaseTable("tmpCustRoomSatisfactions", "RoomId,SatisfiedDim,HousingType,Score integer default 5,ProjId,VersionId integer,Id,BatchId,Buildingid");
+              return this.initBaseTable("tmpCustRoomSatisfactions", "RoomId,SatisfiedDim,Type integer,Score integer default 5,ProjId,VersionId integer,Id,BatchId,Buildingid");
             }).then((v11) => {
               return this.initBaseTable("RoomNoAcceptLogs", "ProjId,RoomId,PlusDesc,VersionId,ID,ReasonNoAcceptId,BatchId,Buildingid,UserName,TransDate");
             }).then((v12) => {
               return this.initBaseTable("tmpRoomNoAcceptLogs", "ProjId,RoomId,PlusDesc,VersionId,ID,ReasonNoAcceptId,BatchId,Buildingid,UserName,TransDate");
             }).then((v13) => {
-              return this.initBaseTable("FormalRoomDetails", "RoomId,TransDate DateTime,RoomStatus,CustId,CustPhone,Remark,EngineerId,EngineerPhone,ImgSign,ProjId,VersionId integer,ID,AmmeterNumber,AmmeterReading real,WaterMeterNumber,WaterMeterReading real,GasMeterNumber,GasMeterReading real,KeyRetentionStatus integer,BatchId,BuildingId,EngineerName");
+              return this.initBaseTable("PreRoomDetails", "RoomId,TransDate DateTime,RoomStatus,Remark,EngineerId,EngineerPhone,ProjId,VersionId integer,ID,BatchId,BuildingId,EngineerName");
             }).then((v14) => {
+              return this.initBaseTable("tmpPreRoomDetails", "RoomId,TransDate DateTime,RoomStatus,Remark,EngineerId,EngineerPhone,ProjId,VersionId integer,ID,BatchId,BuildingId,EngineerName");
+            }).then((v15) => {
+              return this.initBaseTable("OpenRoomDetails", "RoomId,TransDate DateTime,RoomStatus,CustId,CustPhone,Remark,EngineerId,EngineerPhone,ImgSign,ProjId,VersionId integer,ID,BatchId,BuildingId,EngineerName");
+            }).then((v16) => {
+              return this.initBaseTable("tmpOpenRoomDetails", "RoomId,TransDate DateTime,RoomStatus,CustId,CustPhone,Remark,EngineerId,EngineerPhone,ImgSign,ProjId,VersionId integer,ID,BatchId,BuildingId,EngineerName");
+            }).then((v17) => {
+              return this.initBaseTable("FormalRoomDetails", "RoomId,TransDate DateTime,RoomStatus,CustId,CustPhone,Remark,EngineerId,EngineerPhone,ImgSign,ProjId,VersionId integer,ID,AmmeterNumber,AmmeterReading real,WaterMeterNumber,WaterMeterReading real,GasMeterNumber,GasMeterReading real,KeyRetentionStatus integer,BatchId,BuildingId,EngineerName");
+            }).then((v18) => {
               return this.initBaseTable("tmpFormalRoomDetails", "RoomId,TransDate DateTime,RoomStatus,CustId,CustPhone,Remark,EngineerId,EngineerPhone,ImgSign,ProjId,VersionId integer,ID,AmmeterNumber,AmmeterReading real,WaterMeterNumber,WaterMeterReading real,GasMeterNumber,GasMeterReading real ,KeyRetentionStatus integer,BatchId,BuildingId,EngineerName");
             }).catch(err => {
               console.log(err);
@@ -655,7 +670,7 @@ export class initBaseDB {
               console.log("v3");
               return this.resetbuildingdata("Vendprojcheckscopes", projid, buildingid);
             }).then((v5) => {
-              return this.initbuildingbaseData(res[0], projid, batchid, buildingid, 3);
+              return this.initbuildingbaseData(res[0], projid, batchid, buildingid, type);
             }).then((v6) => {
               return this.initApartImage(projid, buildingid);
             }).catch(err => {
@@ -705,7 +720,6 @@ export class initBaseDB {
       });
 
       resolve(promise.then((v1) => {
-
         return this.initbuildingbaseTable(token, projid, batchid, buildingid, type);
       }).then((v2) => {
         console.log('downloadbuildinginfo:v2 :' + v2);
@@ -820,9 +834,9 @@ export class initBaseDB {
         return tmppromise;
       }).then((v1) => {
         if (type == 1) {
-          return this.uploaddata(projid, batchid, buildingid, ["PreCheckIssues"]);
+          return this.uploaddata(projid, batchid, buildingid, ["PreCheckIssues", "PreRoomDetails"]);
         } else if (type == 2) {
-          return this.uploaddata(projid, batchid, buildingid, ["OpenCheckIssues"]);
+          return this.uploaddata(projid, batchid, buildingid, ["OpenCheckIssues", "RoomNoAcceptLogs", "OpenRoomDetails", "CustRoomSatisfactions"]);
         } else if (type == 3) {
           return this.uploaddata(projid, batchid, buildingid, ["FormalCheckIssues", "RoomNoAcceptLogs", "FormalRoomDetails", "CustRoomSatisfactions"]);
         } else {
@@ -834,9 +848,9 @@ export class initBaseDB {
       }).then((v3) => {
         console.log("v3");
         if (type == 1) {
-          return this.resetuploaddata(projid, batchid, buildingid, ["PreCheckIssues"]);
+          return this.resetuploaddata(projid, batchid, buildingid, ["PreCheckIssues", "PreRoomDetails"]);
         } else if (type == 2) {
-          return this.resetuploaddata(projid, batchid, buildingid, ["OpenCheckIssues"]);
+          return this.resetuploaddata(projid, batchid, buildingid, ["OpenCheckIssues", "RoomNoAcceptLogs", "OpenRoomDetails", "CustRoomSatisfactions"]);
         } else if (type == 3) {
           return this.resetuploaddata(projid, batchid, buildingid, ["FormalCheckIssues", "RoomNoAcceptLogs", "FormalRoomDetails", "CustRoomSatisfactions"]);
         } else {
@@ -924,11 +938,15 @@ export class initBaseDB {
         let tablefield: Array<any>; tablefield = [];
         if (type == 1) {
           tablefield.push("PreCheckIssues"); tablefield.push("BatchId,IssueId,RoomId,PositionId,CheckItemId,PlusDesc,IssueDesc,UrgencyId,ImgBefore1,ImgBefore2,ImgBefore3,ImgAfter1,ImgAfter2,ImgAfter3,Id,IssueStatus,VendId,ResponVendId,ProjId,Manager,ResponsibleId,IssueType,RegisterDate ,AppointDate,LimitDate,ReFormDate,CloseDate,CloseReason,CancelDate,CancelReason,VersionId,ImgClose1,ImgClose2,ImgClose3,ReturnDate,ReturnReason,ReturnNum,BuildingId,EngineerId,ReviewDate ,x ,y ,ResponsibleName,ResponsiblePhone,EngineerName,EngineerPhone,ReassignDate,ReassignDesc,ReasonbyOver,fixedDesc");
+          tablefield.push("PreRoomDetails"); tablefield.push("RoomId,TransDate,RoomStatus,Remark,EngineerId,EngineerPhone,ProjId,VersionId,ID,BatchId,BuildingId,EngineerName");
         } else if (type == 2) {
           tablefield.push("OpenCheckIssues"); tablefield.push("BatchId,IssueId,RoomId,PositionId,CheckItemId,PlusDesc,IssueDesc,UrgencyId,ImgBefore1,ImgBefore2,ImgBefore3,ImgAfter1,ImgAfter2,ImgAfter3,Id,IssueStatus,VendId,ResponVendId,ProjId,Manager,ResponsibleId,IssueType,RegisterDate ,AppointDate,LimitDate,ReFormDate,CloseDate,CloseReason,CancelDate,CancelReason,VersionId,ImgClose1,ImgClose2,ImgClose3,ReturnDate,ReturnReason,ReturnNum,BuildingId,EngineerId,ReviewDate ,x ,y ,ResponsibleName,ResponsiblePhone,EngineerName,EngineerPhone,ReassignDate,ReassignDesc,ReasonbyOver,fixedDesc");
+          tablefield.push("CustRoomSatisfactions"); tablefield.push("RoomId,SatisfiedDim,Type,Score,ProjId,VersionId,Id,BatchId,Buildingid");
+          tablefield.push("RoomNoAcceptLogs"); tablefield.push("ProjId,RoomId,PlusDesc,VersionId,ID,ReasonNoAcceptId,BatchId,Buildingid,UserName,TransDate");
+          tablefield.push("OpenRoomDetails"); tablefield.push("RoomId,TransDate,RoomStatus,CustId,CustPhone,Remark,EngineerId,EngineerPhone,ImgSign,ProjId,VersionId,ID,BatchId,BuildingId,EngineerName");
         } else if (type == 3) {
           tablefield.push("FormalCheckIssues"); tablefield.push("BatchId,IssueId,RoomId,PositionId,CheckItemId,PlusDesc,IssueDesc,UrgencyId,ImgBefore1,ImgBefore2,ImgBefore3,ImgAfter1,ImgAfter2,ImgAfter3,Id,IssueStatus,VendId,ResponVendId,ProjId,Manager,ResponsibleId,IssueType,RegisterDate ,AppointDate,LimitDate,ReFormDate,CloseDate,CloseReason,CancelDate,CancelReason,VersionId,ImgClose1,ImgClose2,ImgClose3,ReturnDate,ReturnReason,ReturnNum,BuildingId,EngineerId,ReviewDate ,x ,y ,ResponsibleName,ResponsiblePhone,EngineerName,EngineerPhone,ReassignDate,ReassignDesc,ReasonbyOver,fixedDesc");
-          tablefield.push("CustRoomSatisfactions"); tablefield.push("RoomId,SatisfiedDim,HousingType,Score,ProjId,VersionId,Id,BatchId,Buildingid");
+          tablefield.push("CustRoomSatisfactions"); tablefield.push("RoomId,SatisfiedDim,Type,Score,ProjId,VersionId,Id,BatchId,Buildingid");
           tablefield.push("RoomNoAcceptLogs"); tablefield.push("ProjId,RoomId,PlusDesc,VersionId,ID,ReasonNoAcceptId,BatchId,Buildingid,UserName,TransDate");
           tablefield.push("FormalRoomDetails"); tablefield.push("RoomId,TransDate,RoomStatus,CustId,CustPhone,Remark,EngineerId,EngineerPhone,ImgSign,ProjId,VersionId,ID,AmmeterNumber,AmmeterReading,WaterMeterNumber,WaterMeterReading,GasMeterNumber,GasMeterReading,KeyRetentionStatus,BatchId,BuildingId,EngineerName");
         } else {
@@ -956,7 +974,7 @@ export class initBaseDB {
             console.log(sql);
             return this.db.executeSql(sql, []);
           })
-          /////图片处理  "CustRoomSatisfactions", "RoomId,SatisfiedDim,HousingType,Score integer,ProjId,VersionId integer,Id,BatchId"          
+          /////图片处理  "CustRoomSatisfactions", "RoomId,SatisfiedDim,Type,Score integer,ProjId,VersionId integer,Id,BatchId"          
         }
         return tmppromise;
       }).then(v3 => {
@@ -980,7 +998,9 @@ export class initBaseDB {
         sql += " union select ImgClose1 as fn from #tmptablename# where ImgClose1 != '' and ImgClose1 != 'NUll' and not exists (select projid from imagetable where imagetable.projid = '#projid#' and imagetable.fn = #tmptablename#.ImgClose1) ".replace('#tmptablename#', tmptn).replace('#tmptablename#', tmptn).replace('#projid#', projid);
         sql += " union select ImgClose2 as fn from #tmptablename# where ImgClose2 != '' and ImgClose2 != 'NUll' and not exists (select projid from imagetable where imagetable.projid = '#projid#' and imagetable.fn = #tmptablename#.ImgClose2) ".replace('#tmptablename#', tmptn).replace('#tmptablename#', tmptn).replace('#projid#', projid);
         sql += " union select ImgClose3 as fn from #tmptablename# where ImgClose3 != '' and ImgClose3 != 'NUll' and not exists (select projid from imagetable where imagetable.projid = '#projid#' and imagetable.fn = #tmptablename#.ImgClose3) ".replace('#tmptablename#', tmptn).replace('#tmptablename#', tmptn).replace('#projid#', projid);
-        if (type == 3) {
+        if (type == 2) {
+          sql += " union select ImgSign as fn from #tmptablename2# where ImgSign != '' and ImgSign != 'NUll' and not exists (select projid from imagetable where imagetable.projid = '#projid#' and imagetable.fn = #tmptablename2#.ImgSign) ".replace('#tmptablename2#', 'tmpOpenRoomDetails').replace('#tmptablename2#', 'tmpOpenRoomDetails').replace('#projid#', projid);
+        } else if (type == 3) {
           sql += " union select ImgSign as fn from #tmptablename2# where ImgSign != '' and ImgSign != 'NUll' and not exists (select projid from imagetable where imagetable.projid = '#projid#' and imagetable.fn = #tmptablename2#.ImgSign) ".replace('#tmptablename2#', 'tmpFormalRoomDetails').replace('#tmptablename2#', 'tmpFormalRoomDetails').replace('#projid#', projid);
         }
         console.log(sql);
@@ -1060,7 +1080,7 @@ export class initBaseDB {
     })
   }
 
-  getbatch(projid, type, token, versionid): Promise<any> {
+  refreshbatch(projid, type, token, versionid): Promise<any> {
     return new Promise((resolve) => {
       let promise = new Promise((resolve) => {
         resolve(100);
@@ -1089,6 +1109,55 @@ export class initBaseDB {
         console.log(sql);
         return this.db.executeSql(sql, []);
       }).then((batchlist: any) => {
+        console.log(JSON.stringify(batchlist.rows.item(0)));
+        let batchbuildings: Array<any>; batchbuildings = [];
+        let tmppromise = Promise.resolve([]);
+        for (var i = 0; i < batchlist.rows.length; i++) {
+          console.log(batchlist.rows.item(i).BatchName);
+          let batchid = batchlist.rows.item(i).Batchid;
+          let batchname = batchlist.rows.item(i).BatchName;
+          tmppromise = tmppromise.then(() => {
+            return this.getBuilding(projid, batchid, type);
+          }).then(val => {
+            console.log('val' + val);
+            console.log(batchid);
+            batchbuildings.push({ batchid: batchid, batchname: batchname, buildings: val });
+            return batchbuildings;
+          })
+        }
+        return tmppromise;
+      }).then((buildinglist: Array<any>) => {
+        console.log(buildinglist);
+        return buildinglist;
+      }).catch(err => {
+        this.warn('批次加载错误:' + err);
+      }))
+    })
+  }
+
+  getbatch(projid, type, token, versionid): Promise<any> {
+    return new Promise((resolve) => {
+      let promise = new Promise((resolve) => {
+        resolve(100);
+      });
+      resolve(promise.then((v1) => {
+        return this.existstable("buildingversion").then(counts => {
+          if (counts == 0) {
+            return null;
+          } else {
+            let sql: string;
+            sql = "SELECT batchname,batchid FROM buildingversion where projid = '#projid#' and type = #type# group by batchname,batchid";// 
+            sql = sql.replace("#projid#", projid);
+            sql = sql.replace("#type#", type);
+            console.log(sql);
+            return this.db.executeSql(sql, []);
+          }
+        })
+      }).then((batchlist: any) => {
+        console.log(batchlist);
+        if (!batchlist || batchlist.rows.length == 0) {
+          return [];
+        }
         console.log(JSON.stringify(batchlist.rows.item(0)));
         let batchbuildings: Array<any>; batchbuildings = [];
         let tmppromise = Promise.resolve([]);
@@ -1166,7 +1235,11 @@ export class initBaseDB {
         let batchtn = ''; batchtn = this.getissuetype(type) + "checkbatchrooms";
         // let sql = "select floorid,sortcode from rooms inner join formalcheckbatchrooms fcr on fcr.roomid = rooms.id and fcr.projid = '#projid#' and fcr.batchid = '#batchid#' and fcr.buildingid = '#buildingid#' group by sortcode,floorid order by sortcode";
         let sql = "select * from rooms ";
-        if (type == 3) {
+        if (type == 1) {
+          sql = sql + "left outer join (select roomid, RoomStatus from PreRoomDetails frd where frd.projid = '#projid#' and frd.batchid = '#batchid#' and frd.buildingid = '#buildingid#') frdts on frdts.roomid = rooms.id "
+        } else if (type == 2) {
+          sql = sql + "left outer join (select roomid, RoomStatus from OpenRoomDetails frd where frd.projid = '#projid#' and frd.batchid = '#batchid#' and frd.buildingid = '#buildingid#') frdts on frdts.roomid = rooms.id "
+        } else if (type == 3) {
           sql = sql + "left outer join (select roomid, RoomStatus from FormalRoomDetails frd where frd.projid = '#projid#' and frd.batchid = '#batchid#' and frd.buildingid = '#buildingid#') frdts on frdts.roomid = rooms.id "
         }
         sql = sql + "left outer join (select roomid, count(*) as dzg from #issuename# fci2 where fci2.issuestatus = '待整改' or fci2.issuestatus = '待派单' group by roomid) fdzg on fdzg.roomid = rooms.id "
@@ -1220,7 +1293,7 @@ export class initBaseDB {
             all = { id: floorid, value: [] };
           }
           let color: string;
-          if (type == 3 && items.RoomStatus == '已交付') {
+          if ((type == 1 && items.RoomStatus == '已通过') || (type == 2 && items.RoomStatus == '已接待') || (type == 3 && items.RoomStatus == '已交付')) {
             pass.value.push({ roomid: items.Id, name: items.Name });
             color = "secondary";
             passcounts++;
@@ -1290,7 +1363,7 @@ export class initBaseDB {
           let dt = new Date(v2.rows.item(i).LimitDate);
           let days = 0;
           if (now > dt) {
-            days = Math.round((now.getTime() - dt.getTime()) / 1000 / 3600);
+            days = Math.round((now.getTime() - dt.getTime()) / 1000 / 3600 / 24);
           }
           status = v2.rows.item(i).IssueStatus;
           console.log(status)
@@ -1520,12 +1593,19 @@ export class initBaseDB {
 
   }
 
-  getroomdetails(roomid, batchid): Promise<any> {
+  getroomdetails(roomid, batchid, type): Promise<any> {
     return new Promise((resolve) => {
       let promise = new Promise((resolve) => {
         resolve(100);
       });
-      let sql = "select * from FormalRoomDetails where roomid = '#roomid#' and batchid = '#batchid#'";
+      let sql = "";
+      if (type == 1) {
+        sql = "select * from PreRoomDetails where roomid = '#roomid#' and batchid = '#batchid#'";
+      } else if (type == 2) {
+        sql = "select * from OpenRoomDetails where roomid = '#roomid#' and batchid = '#batchid#'";
+      } else if (type == 3) {
+        sql = "select * from FormalRoomDetails where roomid = '#roomid#' and batchid = '#batchid#'";
+      }
       sql = sql.replace('#roomid#', roomid).replace("#batchid#", batchid);
       resolve(promise.then((v1) => {
         return this.db.executeSql(sql, []);
@@ -1536,14 +1616,14 @@ export class initBaseDB {
 
   }
 
-  getCustSatisfactions(roomid): Promise<any> {
+  getCustSatisfactions(roomid, type): Promise<any> {
     return new Promise((resolve) => {
       let promise = new Promise((resolve) => {
         resolve(100);
       });
       resolve(promise.then((v1) => {
-        let sql = "select crs.SatisfiedDim as Dim, crs.Score from CustRoomSatisfactions crs inner join custsatisfaction csf on crs.SatisfiedDim = csf.name where crs.roomid = '#roomid#' order by csf.sortcode";
-        sql = sql.replace('#roomid#', roomid);
+        let sql = "select crs.SatisfiedDim as Dim, crs.Score from CustRoomSatisfactions crs inner join custsatisfaction csf on crs.SatisfiedDim = csf.name where crs.roomid = '#roomid#' and crs.type = #type# order by csf.sortcode";
+        sql = sql.replace('#roomid#', roomid).replace('#type#', type.toString());
         console.log(sql);
         return this.db.executeSql(sql, []);
       }).then((v2: any) => {
@@ -1551,7 +1631,8 @@ export class initBaseDB {
         if (v2 && v2.rows.length > 0) {
           return v2;
         } else {
-          let sql = "select name as Dim, 0 as Score from custsatisfaction order by sortcode";
+          let sql = "select name as Dim, 0 as Score from custsatisfaction where type = #type# order by sortcode";
+          sql = sql.replace('#type#', type.toString());
           console.log(sql);
           return this.db.executeSql(sql, []);
         }
@@ -1604,8 +1685,14 @@ export class initBaseDB {
   }
 
   getuplissuetablename(type): string {
-    if (type == 3) {
+    if (type == 1) {
+      return 'uplPreCheckIssues';
+    } else if (type == 2) {
+      return 'uplOpenCheckIssues';
+    } else if (type == 3) {
       return 'uplFormalCheckIssues';
+    } else if (type == 4) {
+      return 'uplServiceCheckIssues';
     }
   }
 
@@ -1706,7 +1793,7 @@ export class initBaseDB {
             console.log(sql);
             return this.db.executeSql(sql, []);
           })
-          /////图片处理  "CustRoomSatisfactions", "RoomId,SatisfiedDim,HousingType,Score integer,ProjId,VersionId integer,Id,BatchId"          
+          /////图片处理  "CustRoomSatisfactions", "RoomId,SatisfiedDim,Type,Score integer,ProjId,VersionId integer,Id,BatchId"          
         }
         return tmppromise;
       }).then(v3 => {
@@ -1842,7 +1929,6 @@ export class initBaseDB {
             return this.initBaseTable("imagetable", "projid,fn,src,status integer default 0");
           }).then((v8) => {
             console.log("downloadbuilderdata");
-
             return this.httpService.get(APP_SERVE_URL + "/VendPack", { Token: token, projId: projid, appDateStr: null });
           }).then((v9) => {
             return this.initbuilderData(v9[0], projid);
@@ -1980,10 +2066,27 @@ export class initBaseDB {
         return this.resetuploadbuilderdata(projid, ["PreCheckIssues", "PreCheckLogs", "OpenCheckIssues", "OpenCheckLogs", "FormalCheckIssues", "FormalCheckLogs", "ServiceCheckIssues", "ServiceCheckLogs"]);
       }).then((v4) => {
         console.log('v4');
+        let sqls = [];
         let sql = "delete from uplimagetable where projid = '#projid#'";
         sql = sql.replace('#projid#', projid);
-        console.log(sql);
-        return this.db.executeSql(sql, []);
+        sqls.push(sql);
+        sql = "delete from Precheckissues where projid = '#projid#' and VendId = ''";
+        sql = sql.replace('#projid#', projid);
+        sqls.push(sql);
+        sql = "delete from opencheckissues where projid = '#projid#' and VendId = ''";
+        sql = sql.replace('#projid#', projid);
+        sqls.push(sql);
+        sql = "delete from formalcheckissues where projid = '#projid#' and VendId = ''";
+        sql = sql.replace('#projid#', projid);
+        sqls.push(sql);
+        sql = "delete from Servicecheckissues where projid = '#projid#' and VendId = ''";
+        sql = sql.replace('#projid#', projid);
+        sqls.push(sql);
+        console.log(sqls);
+        return this.db.sqlBatch(sqls);
+      }).then((v) => {
+        console.log('v')
+        return this.localStorage.setItem('needupload' + projid, false);
       }).then((v5) => {
         console.log('v5')
         return this.downloadbuilderdata(token, projid);
@@ -2232,7 +2335,7 @@ export class initBaseDB {
         console.log(sqls);
         return this.db.sqlBatch(sqls);
       }).then((v2) => {
-        return 1;
+        return this.localStorage.setItem('needupload' + projid, true);
       }).catch(err => {
         this.warn('指派失败:' + err);
         throw '指派失败';
@@ -2313,7 +2416,7 @@ export class initBaseDB {
         console.log(sqls);
         return this.db.sqlBatch(sqls);
       }).then((v2) => {
-        return 1;
+        return this.localStorage.setItem('needupload' + projid, true);
       }).catch(err => {
         this.warn('提交整改完成失败:' + err);
         throw '提交整改完成失败';
@@ -2370,7 +2473,7 @@ export class initBaseDB {
         console.log(sqls);
         return this.db.sqlBatch(sqls);
       }).then((v2) => {
-        return 1;
+        return this.localStorage.setItem('needupload' + projid, true);
       }).catch(err => {
         this.warn('提交整改完成失败:' + err);
         throw '提交整改完成失败';
@@ -2388,7 +2491,7 @@ export class initBaseDB {
         let sqls = [];
         let now = new Date();
         let curtime: string = now.toLocaleDateString() + " " + now.getHours().toString() + ":" + now.getMinutes() + ":" + now.getSeconds();
-        let sql = "update #tablename# set ReassignDate = '" + curtime + "',ReassignDesc = '#reason#',AppointDate = '',issuestatus = '待派单',ResponVendId = '',ResponsibleName = '',ResponsiblePhone = '' where projid = '#projid#' and id = '#issueid#'";
+        let sql = "update #tablename# set ReassignDate = '" + curtime + "',ReassignDesc = '#reason#',AppointDate = '',issuestatus = '待派单',ResponsibleId = '',ResponsibleName = '',ResponsiblePhone = '' where projid = '#projid#' and id = '#issueid#'";
         let usql = sql.replace('#tablename#', 'PreCheckIssues').replace('#projid#', projid).replace('#issueid#', issueid).replace('#reason#', result);
         sqls.push(usql);
         usql = sql.replace('#tablename#', 'OpenCheckIssues').replace('#projid#', projid).replace('#issueid#', issueid).replace('#reason#', result);
@@ -2427,7 +2530,64 @@ export class initBaseDB {
         console.log(sqls);
         return this.db.sqlBatch(sqls);
       }).then((v2) => {
-        return 1;
+        return this.localStorage.setItem('needupload' + projid, true);
+      }).catch(err => {
+        this.warn('退回指派失败:' + err);
+        throw '退回指派失败';
+      }))
+    })
+  }
+
+  returnbuilderassign(projid, issueid, username, userid, result, type): Promise<any> {
+    return new Promise((resolve) => {
+      let promise = new Promise((resolve) => {
+        resolve(100);
+      });
+      console.log("returnvend");   //ManagerName default '',ManagerPhone default '',
+      resolve(promise.then((v1) => {
+        let sqls = [];
+        let now = new Date();
+        let curtime: string = now.toLocaleDateString() + " " + now.getHours().toString() + ":" + now.getMinutes() + ":" + now.getSeconds();
+        let sql = "update #tablename# set ReassignDate = '" + curtime + "',ReassignDesc = '#reason#',AppointDate = '',issuestatus = '待派单',ResponVendId = '',ResponsibleName = '',ResponsiblePhone = '',VendId = '',Manager = '',ManagerName = '',ManagerPhone = '' where projid = '#projid#' and id = '#issueid#'";
+        let usql = sql.replace('#tablename#', 'PreCheckIssues').replace('#projid#', projid).replace('#issueid#', issueid).replace('#reason#', result);
+        sqls.push(usql);
+        usql = sql.replace('#tablename#', 'OpenCheckIssues').replace('#projid#', projid).replace('#issueid#', issueid).replace('#reason#', result);
+        sqls.push(usql);
+        usql = sql.replace('#tablename#', 'FormalCheckIssues').replace('#projid#', projid).replace('#issueid#', issueid).replace('#reason#', result);
+        sqls.push(usql);
+        usql = sql.replace('#tablename#', 'ServiceCheckIssues').replace('#projid#', projid).replace('#issueid#', issueid).replace('#reason#', result);
+        sqls.push(usql);
+
+        sql = "delete from upl#tablename# where projid = '#projid#' and id = '#issueid#'";
+        usql = sql.replace('#tablename#', 'PreCheckIssues').replace('#projid#', projid).replace('#issueid#', issueid);
+        sqls.push(usql);
+        usql = sql.replace('#tablename#', 'OpenCheckIssues').replace('#projid#', projid).replace('#issueid#', issueid);
+        sqls.push(usql);
+        usql = sql.replace('#tablename#', 'FormalCheckIssues').replace('#projid#', projid).replace('#issueid#', issueid);
+        sqls.push(usql);
+        usql = sql.replace('#tablename#', 'ServiceCheckIssues').replace('#projid#', projid).replace('#issueid#', issueid);
+        sqls.push(usql);
+
+        sql = "insert into #upltablename# (Id,BatchId,RoomId,ProjId,VersionId,BuildingId,IssueStatus,ResponsibleName,ResponsiblePhone,AppointDate,ReassignDate,ReassignDesc,ResponVendId,VendId,Manager,ManagerName,ManagerPhone) select Id,BatchId,RoomId,ProjId,VersionId,BuildingId,IssueStatus,ResponsibleName,ResponsiblePhone,AppointDate,ReassignDate,ReassignDesc,ResponVendId,VendId,Manager,ManagerName,ManagerPhone from #tablename# where projid = '#projid#' and id = '#issueid#'";
+        usql = sql.replace('#upltablename#', 'uplPreCheckIssues').replace('#tablename#', 'PreCheckIssues').replace('#projid#', projid).replace('#issueid#', issueid);
+        sqls.push(usql);
+        usql = sql.replace('#upltablename#', 'uplOpenCheckIssues').replace('#tablename#', 'OpenCheckIssues').replace('#projid#', projid).replace('#issueid#', issueid);
+        sqls.push(usql);
+        usql = sql.replace('#upltablename#', 'uplFormalCheckIssues').replace('#tablename#', 'FormalCheckIssues').replace('#projid#', projid).replace('#issueid#', issueid);
+        sqls.push(usql);
+        usql = sql.replace('#upltablename#', 'uplServiceCheckIssues').replace('#tablename#', 'ServiceCheckIssues').replace('#projid#', projid).replace('#issueid#', issueid);
+        sqls.push(usql);
+
+        sql = "update projversion set needupd = 1 where projid = '#projid#'";
+        usql = sql.replace('#projid#', projid);
+        sqls.push(usql);
+        // sql = "insert into #tablename# (BatchId,IssueId,IssueStatus,LogDate,UserId,UserName,ProjId,VersionId) select BatchId,ID,IssueStatus,AppointDate,'#userid#','#username#',projid,0 from #issuetable# where projid = '#projid#' and id = '#issueid#'";
+        // usql = sql.replace('#tablename#', 'FormalCheckLogs').replace('#issuetable#', 'FormalCheckIssues').replace('#projid#', projid).replace('#issueid#', issueid).replace('#userid#', userid).replace('#username#', username);
+        // sqls.push(usql);
+        console.log(sqls);
+        return this.db.sqlBatch(sqls);
+      }).then((v2) => {
+        return this.localStorage.setItem('needupload' + projid, true);
       }).catch(err => {
         this.warn('退回指派失败:' + err);
         throw '退回指派失败';
@@ -2476,6 +2636,121 @@ export class initBaseDB {
         this.warn('提交团队成员失败:' + err);
         throw '提交团队成员失败';
       }))
+    })
+  }
+
+  checkuploadflag(projid, vendrole: boolean): Promise<any> {
+    return new Promise((resolve) => {
+      let promise = new Promise((resolve) => {
+        resolve(100);
+      });
+      console.log("checkuploadflag");
+      if (vendrole == true) {
+        resolve(promise.then((v1) => {
+          return this.localStorage.getItem('needupload' + projid);
+        }).then((v2: any) => {
+          console.log("vend:" + v2);
+          if (v2 && v2 == true) {
+            return true;
+          } else {
+            return false;
+          }
+        }).catch(err => {
+          this.warn('上传数据检查失败:' + err);
+          //throw '上传数据检查失败';
+        }))
+      } else {
+        resolve(promise.then((v1) => {
+          let sql = "select Buildingid from buildingversion where needupload = 1 and projid = '" + projid + "' limit 1";
+          console.log(sql);
+          return this.db.executeSql(sql, []);
+        }).then((v2: any) => {
+          if (v2 && v2.rows.length > 0) {
+            return true;
+          } else {
+            return false;
+          }
+        }).catch(err => {
+          this.warn('上传数据检查失败:' + err);
+        }))
+      }
+    })
+  }
+
+  uploadall(projid, token, vendrole: boolean): Promise<any> {
+    return new Promise((resolve) => {
+      let promise = new Promise((resolve) => {
+        resolve(100);
+      });
+      if (vendrole == true) {
+        resolve(promise.then((v1) => {
+          return this.nativeservice.isConnecting();
+        }).then((val: boolean) => {
+          if (val == false) {
+            return "not connecting";
+          } else {
+            this.nativeservice.showLoading("上传中...");
+            return this.uploadbuilderinfo(token, projid);
+          }
+        }).then((v) => {
+          console.log(v);
+          this.nativeservice.hideLoading();
+          if (v != "not connecting") {
+            this.nativeservice.showToast('上传完成.');
+            return true;
+          } else {
+            //return false;
+            return this.nativeservice.alert('当前没有网络无法上传。').then(v=>{
+               throw '当前没有网络无法上传。'
+            })           
+          }
+        }).catch(err => {
+          this.nativeservice.hideLoading();
+          console.log('楼栋上传错误:' + err);
+        }))
+      } else {
+        resolve(promise.then((v1) => {
+          return this.nativeservice.isConnecting();
+        }).then((val: boolean) => {
+          if (val == false) {
+            return "not connecting";
+          } else {
+            this.nativeservice.showLoading("上传中...");
+            let sql = "select * from buildingversion where needupload = 1 and projid = '" + projid + "'";
+            console.log(sql);
+            return this.db.executeSql(sql, []);
+          }
+        }).then((v1: any) => {
+          console.log(v1);
+          if (v1 == "not connecting") {
+            return this.nativeservice.alert('当前没有网络无法上传。').then(v=>{
+              throw '当前没有网络无法上传。'
+            })            
+          } else {
+            if (v1) {
+              let tmppromise = Promise.resolve(false);
+              for (var i = 0; i < v1.rows.length; i++) {
+                console.log(JSON.stringify(v1.rows.item(i)));
+                tmppromise = tmppromise.then(() => {
+                  return this.uploadbuildinginfo(token, projid, v1.rows.item(i).Batchid, v1.rows.item(i).Buildingid, v1.rows.item(i).Type);
+                }).then((v) => {
+                  return true;
+                })
+              }
+              return tmppromise;
+            } else {
+              return true;
+            }
+          }
+        }).then((v) => {
+          this.nativeservice.hideLoading();
+          this.nativeservice.showToast('上传完成.');
+          return v;
+        }).catch(err => {
+          this.nativeservice.hideLoading();
+          console.log('楼栋上传错误:' + err);
+        }))
+      }
     })
   }
 
@@ -2543,7 +2818,7 @@ export class initBaseDB {
     })
   }
 
-  cleardynamicData(vendrole: boolean): Promise<any> {
+  cleardynamicData(projid, vendrole: boolean): Promise<any> {
     return new Promise((resolve) => {
       //let filename = Md5.hashStr(src).toString() + ext;//'11.jpg';//
       console.log("clearData");
@@ -2597,6 +2872,8 @@ export class initBaseDB {
           return this.db.executeSql(sql, []);
         }).then((v7) => {
           return this.db.executeSql("delete from imagetable", []);
+        }).then((v8) => {
+          return this.localStorage.setItem('needupload' + projid, false);
         }).catch(err => {
           console.log(err);
         }))
@@ -2629,7 +2906,7 @@ export class initBaseDB {
         }).then((vv) => {
           return this.deleteTable("ReasonNoAccepts");
         }).then((v1) => {
-          return this.deleteTable("tmpprojversion");
+          return this.resetdata("tmpprojversion");
         }).then((v2) => {
           return this.deleteTable("uplimagetable");
         }).then((v3) => {
@@ -2671,6 +2948,14 @@ export class initBaseDB {
         }).then((v2) => {
           return this.deleteTable("tmpRoomNoAcceptLogs");
         }).then((v3) => {
+          return this.deleteTable("PreRoomDetails");
+        }).then((v5) => {
+          return this.deleteTable("tmpPreRoomDetails");
+        }).then((v3) => {
+          return this.deleteTable("OpenRoomDetails");
+        }).then((v5) => {
+          return this.deleteTable("tmpOpenRoomDetails");
+        }).then((v3) => {
           return this.deleteTable("FormalRoomDetails");
         }).then((v5) => {
           return this.deleteTable("tmpFormalRoomDetails");
@@ -2688,6 +2973,7 @@ export class initBaseDB {
         }).then((v7) => {
           return this.localStorage.getItem('curproj');
         }).then((v9: any) => {
+          console.log(v9);
           return this.localStorage.setItem('curproj', { projid: v9.projid, projname: v9.projname, versionid: 0, needupd: 1 });
         }).catch(err => {
           console.log(err);

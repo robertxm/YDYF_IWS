@@ -1,6 +1,6 @@
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title left>{{buildingname}}{{roomname}}</ion-title>
     <ion-buttons right>
       <button ion-button (click)="listshowclick()">{{liststr}}
@@ -65,7 +65,33 @@
 
 </ion-content>
 
-<ion-footer *ngIf="type == 3 && userrole.indexOf('A6') != -1">
+<ion-footer *ngIf="type == 1 && userrole.indexOf('A4') != -1">
+  <div *ngIf="readonly==false">
+    <table width="100%">
+      <button ion-button color="default" full (click)="doPass()">通过</button>
+    </table>
+  </div>
+  <div *ngIf="readonly">
+    <table width="100%">
+      <button ion-button color="default" full (click)="Passinfo()">通过信息</button>
+    </table>
+  </div>
+</ion-footer>
+
+<ion-footer *ngIf="type == 2 && userrole.indexOf('A6') != -1">
+  <div *ngIf="readonly==false">
+    <table width="100%">
+      <button ion-button color="default" full (click)="doReceipt()">接待</button>
+    </table>
+  </div>
+  <div *ngIf="readonly">
+    <table width="100%">
+      <button ion-button color="default" full (click)="Receiptinfo()">接待信息</button>
+    </table>
+  </div>
+</ion-footer>
+
+<ion-footer *ngIf="type == 3 && userrole.indexOf('A7') != -1">
   <div *ngIf="readonly==false">
     <table width="100%">
       <tr>

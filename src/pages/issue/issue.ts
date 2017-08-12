@@ -62,7 +62,7 @@ export class IssuePage {
 	managername: string;
 	managerphone: string;
 	timelimit: number;
-	floorid:string;
+	floorid: string;
 	constructor(public localStorage: LocalStorage, private camera: Camera, public navCtrl: NavController, public alertCtrl: AlertController, public initBaseDB: initBaseDB,
 		public params: NavParams, private nativeService: NativeService, private modalCtrl: ModalController, private elementRef: ElementRef) {
 		this.projid = this.params.get('projid');
@@ -122,17 +122,18 @@ export class IssuePage {
 
 	Cansubmit(): boolean {
 		if (this.positionid == '') {
-			alert('部位不能为空'); return false;
+			this.nativeService.alert('部位不能为空'); return false;
 		} else if (this.checkitem == "") {
-			alert('检查项不能为空'); return false;
+			this.nativeService.alert('检查项不能为空'); return false;
 		} else if (this.itdesc == "") {
-			alert('描述不能为空'); return false;
+			this.nativeService.alert('描述不能为空'); return false;
 		} else if (this.vend == "") {
-			alert('承建商不能为空'); return false;
+			this.nativeService.alert('承建商不能为空'); return false;
 		} else if (this.resunit == "") {
-			alert('责任单位不能为空'); return false;
+			this.nativeService.alert('责任单位不能为空'); return false;
+		} else {
+			return true;
 		}
-		return true;
 	}
 
 	positionchange() {
@@ -245,8 +246,8 @@ export class IssuePage {
 			encodingType: this.camera.EncodingType.JPEG,
 			mediaType: this.camera.MediaType.PICTURE,
 			correctOrientation: true,
-			// targetHeight:1024,
-			// targetWidth:800
+			targetHeight:800,
+			targetWidth:480
 		}
 
 		this.camera.getPicture(options).then((imageData) => {
@@ -313,9 +314,9 @@ export class IssuePage {
 				let t = new Date(now.getTime() + this.timelimit * 24 * 3600 * 1000);
 				let w = new Date(Date.UTC(t.getFullYear(), t.getMonth(), t.getDate(), 15, 59, 59));
 				console.log(w.toLocaleString());
-				let duetime:string;
-				duetime = w.toLocaleDateString()+" "+w.getHours().toString()+":59:59";
-				let curtime:string = now.toLocaleDateString()+" "+now.getHours().toString()+":"+now.getMinutes()+":"+now.getSeconds();
+				let duetime: string;
+				duetime = w.toLocaleDateString() + " " + w.getHours().toString() + ":59:59";
+				let curtime: string = now.toLocaleDateString() + " " + now.getHours().toString() + ":" + now.getMinutes() + ":" + now.getSeconds();
 				console.log(duetime);
 				console.log(curtime);
 				value.push("'" + this.issueid + "'");
@@ -349,8 +350,8 @@ export class IssuePage {
 					console.log(imgfields);
 				}
 				if (IssueStatus == '已整改') {
-					value.push("'" + curtime + "'"); 
-					value.push("'" + curtime + "'"); 
+					value.push("'" + curtime + "'");
+					value.push("'" + curtime + "'");
 				}// #imgfields# #reformdate#) values (#values#)"
 				sql = sql.replace('#imgfields#', imgfields).replace('#reformdate#', refields).replace('#values#', value.join(',')).replace('#tablename#', this.initBaseDB.getissuetablename(this.type));
 				console.log(sql);
@@ -358,8 +359,7 @@ export class IssuePage {
 			}).then((v3) => {
 				return this.initBaseDB.updateuploadflag(this.projid, this.batchid, this.buildingid, this.type);
 			}).catch(err => {
-				console.log('问题提交失败:' + err);
-				alert('问题提交失败:' + err);
+				console.log('问题提交失败:' + err);				
 			}))
 		})
 	}
@@ -381,12 +381,12 @@ export class IssuePage {
 		});
 	}
 	//点击图片放大
-	showBigImage(imagesrc) {  		
+	showBigImage(imagesrc) {
 		let i = 0;
 		this.images.forEach(element => {
-			if (element == imagesrc){
-                this.navCtrl.push(ShowimgPage, { imgdata: this.images,num: i });
-			}				
+			if (element == imagesrc) {
+				this.navCtrl.push(ShowimgPage, { imgdata: this.images, num: i });
+			}
 			i++;
 		});
 	};

@@ -53,8 +53,8 @@ export class BuilderIssueDetail {
   registertime: string;
   duetime: string;
   assigntime: string;
-  fixedtime:string = "";
-  fixeddesc:string = "";
+  fixedtime: string = "";
+  fixeddesc: string = "";
   images: Array<any>;
   imagesfixed: Array<any>;
   teammembers: Array<any>;
@@ -77,6 +77,9 @@ export class BuilderIssueDetail {
       issuelist = val.rows.item(0);
       console.log(JSON.stringify(val.rows.item(0)));
       this.fixeddesc = issuelist.fixedDesc;
+      if (this.fixeddesc == 'undefined'){
+        this.fixeddesc = '';
+      }
       let dt = new Date(issuelist.RegisterDate);
       this.registertime = dt.toLocaleString();
       if (issuelist.LimitDate) {
@@ -139,7 +142,7 @@ export class BuilderIssueDetail {
           console.log('图片1加载失败' + err);
         })
       }
-      console.log("log:"+v[1]);
+      console.log("log:" + v[1]);
       let log: any; log = v[1];
       for (var i = 1; i < log.rows.length; i++) {
         console.log(JSON.stringify(log.rows.item(i)));
@@ -207,32 +210,39 @@ export class BuilderIssueDetail {
     modal.onDidDismiss(result => {
       if (result) {
         console.log(result);
-        this.initBaseDB.returnassign(this.projid, this.issueid, this.username, this.userid, result, this.issue.type).then(val => {
-          this.nativeservice.showToast('退回成功.');
-          this.navCtrl.pop();
-        })
+        if (this.issue.status == "待派单") {
+          this.initBaseDB.returnbuilderassign(this.projid, this.issueid, this.username, this.userid, result, this.issue.type).then(val => {
+            this.nativeservice.showToast('退回成功.');
+            this.navCtrl.pop();
+          })
+        } else {
+          this.initBaseDB.returnassign(this.projid, this.issueid, this.username, this.userid, result, this.issue.type).then(val => {
+            this.nativeservice.showToast('退回成功.');
+            this.navCtrl.pop();
+          })
+        }
       }
     });
     modal.present();
   }
 
   showBigImage(imagesrc, fixedflag: number = 0) {  //传递一个参数（图片的URl）
-		let i = 0;
-		if (fixedflag == 0) {
-			this.images.forEach(element => {
-				if (element == imagesrc) {
-					this.navCtrl.push(ShowimgPage, { imgdata: this.images, num: i });
-				}
-				i++;
-			})
-		} else {
-			this.imagesfixed.forEach(element => {
-				if (element == imagesrc) {
-					this.navCtrl.push(ShowimgPage, { imgdata: this.imagesfixed, num: i });
-				}
-				i++;
-			})
-		}
-	};
+    let i = 0;
+    if (fixedflag == 0) {
+      this.images.forEach(element => {
+        if (element == imagesrc) {
+          this.navCtrl.push(ShowimgPage, { imgdata: this.images, num: i });
+        }
+        i++;
+      })
+    } else {
+      this.imagesfixed.forEach(element => {
+        if (element == imagesrc) {
+          this.navCtrl.push(ShowimgPage, { imgdata: this.imagesfixed, num: i });
+        }
+        i++;
+      })
+    }
+  };
 
 }

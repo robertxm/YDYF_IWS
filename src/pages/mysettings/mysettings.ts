@@ -18,13 +18,16 @@ export class MysettingsPage {
   projname: string;
   projnames: Array<string>;
   projids: Array<string>;
+  projid: string;
   versionids: Array<number>;
   needupds: Array<number>;
   vendrole: boolean;
+  token: string;
   constructor(public navCtrl: NavController, private dialogs: Dialogs, public params: NavParams, public localStorage: LocalStorage, public initBaseDB: initBaseDB,
     public nativeservice: NativeService) {
     this.username = this.params.get('username');
     this.vendrole = this.params.get('vendrole');
+    this.token = this.params.get('token');
     this.first = false;
   }
   ngOnInit() {
@@ -36,6 +39,7 @@ export class MysettingsPage {
     });
     this.localStorage.getItem('curproj').then(val => {
       this.projname = val.projname;
+      this.projid = val.projid;
     })
     this.projnames = [];
     this.projids = [];
@@ -65,11 +69,16 @@ export class MysettingsPage {
   projchange(event) {
     console.log(this.versionids);
     let i = this.projnames.indexOf(this.projname, 0);
+    
     this.localStorage.setItem('curproj', { projid: this.projids[i], projname: this.projname, versionid: this.versionids[i], needupd: this.needupds[i] }).then(val => {
       this.localStorage.getItem('curuser').then(v => {
+        this.nativeservice.showLoading('处理中，请稍侯...')
         this.initBaseDB.checkandupdprojversion(this.projids[i], v.token, this.versionids[i], v.vendrole).then(v => {
           console.log(v);
+          this.nativeservice.hideLoading();
           this.nativeservice.showToast("设置成功");
+        }).catch(err=>{
+          this.nativeservice.hideLoading();
         })
       })
     }).catch(e => alert(e));
@@ -80,28 +89,49 @@ export class MysettingsPage {
   }
 
   logoutclick() {
-    
-    this.dialogs.confirm('确定要退出吗?', '', ['确定', '取消'])
-      .then(val => {
-        if (val == 1) {
-          this.localStorage.removeitem('curuser');
-          this.localStorage.removeitem('curproj');
-          this.navCtrl.push(LoginPage);
-        }
-      })
-      .catch(e => console.log('Error displaying dialog', e));
+    this.initBaseDB.checkuploadflag(this.projid, this.vendrole).then(v => {
+      if (v == true) {
+        this.dialogs.confirm('存在未上传数据，是否先上传数据？', '', ['暂不上传', '全部上传'])
+          .then(val => {
+            if (val == 2) {
+              this.initBaseDB.uploadall(this.projid, this.token, this.vendrole);
+            } else {
+              this.dialogs.confirm('确定要退出吗?', '', ['取消', '确定'])
+                .then(val => {
+                  if (val == 2) {
+                    this.localStorage.removeitem('curuser');
+                    this.localStorage.removeitem('curproj');
+                    this.navCtrl.push(LoginPage);
+                  }
+                })
+                .catch(e => console.log('Error displaying dialog', e));
+            }
+          })
+      } else {
+        this.dialogs.confirm('确定要退出吗?', '', ['取消', '确定'])
+          .then(val => {
+            if (val == 2) {
+              this.localStorage.removeitem('curuser');
+              this.localStorage.removeitem('curproj');
+              this.navCtrl.push(LoginPage);
+            }
+          })
+          .catch(e => console.log('Error displaying dialog', e));
+      }
+    })
+
   }
 
   clearcacheclick() {
     this.dialogs.confirm('清除数据将清除您全部已下载的楼栋数据和未上传的问题数据。', '', ['放弃清除', '继续清除'])
       .then(val => {
-        if (val = 2) {
+        if (val == 2) {
           //清除楼栋基础包、动态包
           this.nativeservice.showLoading("清除中...", 30000);
-          this.initBaseDB.cleardynamicData(this.vendrole).then(v => {
+          this.initBaseDB.cleardynamicData(this.projid, this.vendrole).then(v => {
             this.nativeservice.hideLoading();
             this.nativeservice.showToast("清除完成.");
-          }).catch(e=>{
+          }).catch(e => {
             this.nativeservice.hideLoading();
             console.log('清除失败')
           })

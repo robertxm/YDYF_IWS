@@ -117,6 +117,7 @@ export class IssueviewPage {
 			if (issuelist.ImgAfter1) {
 				this.initBaseDB.getimagedata(this.projid, issuelist.ImgAfter1).then((v1: any) => {
 					this.imagesfixed.push('data:image/jpeg;base64,' + v1.rows.item(0).src);
+					console.log('data:image/jpeg;base64,' + v1.rows.item(0).src);
 					if (issuelist.ImgAfter2) {
 						this.initBaseDB.getimagedata(this.projid, issuelist.ImgAfter2).then((v2: any) => {
 							this.imagesfixed.push('data:image/jpeg;base64,' + v2.rows.item(0).src);
@@ -171,8 +172,7 @@ export class IssueviewPage {
 					this.navCtrl.pop();
 				})
 			}).catch(err => {
-				console.log('通过失败:' + err);
-				alert('通过失败:' + err);
+				console.log('通过失败:' + err);				
 			})
 		} else {
 			let sql = "update #tablename# set IssueStatus = '已通过', ReviewDate = '" + curtime + "', EngineerName = '#username#',EngineerPhone = '#userid#',EngineerId = '' where Id = '#issueid#' ";
@@ -214,7 +214,6 @@ export class IssueviewPage {
 				this.navCtrl.pop();
 			}).catch(err => {
 				console.log('通过失败:' + err);
-				alert('通过失败:' + err);
 			})
 		}
 	}
@@ -238,6 +237,7 @@ export class IssueviewPage {
 				if (this.versionid == 0) {
 					let sql = "update #tablename# set IssueStatus = '#status#', ReturnDate = '" + curtime + "',ReturnReason = '#ReturnReason#', EngineerName = '#username#',EngineerPhone = '#userid#',EngineerId = '',ReturnNum = ReturnNum+1 where Id = '#issueid#'";
 					sql = sql.replace("#tablename#", tablename).replace("#userid#", this.userid).replace('#issueid#', this.issueid).replace('#status#', status).replace('#ReturnReason#', result).replace('#username#', this.username);
+					console.log(sql);
 					this.initBaseDB.updateIssue([sql]).then(v => {
 						console.log(sql);
 						this.initBaseDB.updateuploadflag(this.projid, this.batchid, this.buildingid, this.type).then(v => {
@@ -245,7 +245,6 @@ export class IssueviewPage {
 						})
 					}).catch(err => {
 						console.log('退回失败:' + err);
-						alert('退回失败:' + err);
 					})
 				} else {
 					let sql = "update #tablename# set IssueStatus = '#status#', ReturnDate = '" + curtime + "', ReturnReason = '#ReturnReason#',EngineerName = '#username#',EngineerPhone = '#userid#',EngineerId = '',ReturnNum = ReturnNum+1 where Id = '#issueid#' ";
@@ -256,7 +255,7 @@ export class IssueviewPage {
 					let promise = new Promise((resolve) => {
 						resolve(100);
 					});
-
+                    console.log(uplsql);
 					promise.then(v1 => {
 						return this.initBaseDB.currentdb().executeSql(uplsql, []);
 					}).then((val: any) => {
@@ -290,7 +289,6 @@ export class IssueviewPage {
 						this.navCtrl.pop();
 					}).catch(err => {
 						console.log('退回失败:' + err);
-						alert('退回失败:' + err);
 					})
 				}
 			}
@@ -329,7 +327,6 @@ export class IssueviewPage {
 							})
 						}).catch(err => {
 							console.log('非正常关闭:' + err);
-							alert('非正常关闭:' + err);
 						})
 					} else {
 						let setimg = '';
@@ -384,7 +381,6 @@ export class IssueviewPage {
 							this.navCtrl.pop();
 						}).catch(err => {
 							console.log('非正常关闭:' + err);
-							alert('非正常关闭:' + err);
 						})
 					}
 				})
@@ -408,7 +404,6 @@ export class IssueviewPage {
 				})
 			}).catch(err => {
 				console.log('通过失败:' + err);
-				alert('通过失败:' + err);
 			})
 		} else {
 			let sql = "update #tablename# set IssueStatus = '已作废', CancelDate = '" + curtime + "', EngineerName = '#username#',EngineerPhone = '#userid#',EngineerId = '' where Id = '#issueid#' ";
@@ -451,7 +446,6 @@ export class IssueviewPage {
 				this.navCtrl.pop();
 			}).catch(err => {
 				console.log('作废失败:' + err);
-				alert('作废失败:' + err);
 			})
 		}
 	}

@@ -23,4 +23,11 @@ export class IssuereturnPage {
     this.viewCtrl.dismiss(result);
   }
   
+  close() {
+        this.viewCtrl.dismiss();
+  }
+
+	cancel() {
+		this.close();
+	}
 }

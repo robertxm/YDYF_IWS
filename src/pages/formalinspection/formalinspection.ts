@@ -32,23 +32,46 @@ export class FormalinspectionPage {
 
     this.localStorage.getItem('curproj').then(val => {
       if (val && val.projid) {
+        console.log(this.projid);        
         this.projid = val.projid;
         this.projname = val.projname;
         this.versionid = val.versionid;
         this.initbatch();
       } else {
         this.nodata = true;
-        alert("项目或App没授权，请联系系统管理员.");
-        throw '';
+        this.nativeservice.alert("项目或App没授权，请联系系统管理员.");        
       }
     })
+  }
+
+  doRefresh(refresher) {
+    console.log('Begin async operation', refresher);
+    setTimeout(() => {
+      this.nativeservice.showLoading("刷新中，请稍侯...");
+      this.initBaseDB.refreshbatch(this.projid, this.type, this.token, this.versionid).then((batlist: Array<any>) => {
+        if (batlist && batlist.length > 0) {
+          this.batchbuildings = batlist;
+          this.nodata = false;
+          console.log(this.nodata);
+        } else {
+          this.nodata = true;
+        }
+        console.log("initbatch" + this.nodata);
+        console.log(this.batchbuildings);        
+        this.nativeservice.hideLoading();
+        refresher.complete();
+      }).catch(e => {
+        this.nativeservice.hideLoading();
+        refresher.complete();
+      })
+    }, 2000);
   }
 
   ngOnInit() {
 
   }
 
-  initbatch() {   
+  initbatch() {
     this.initBaseDB.getbatch(this.projid, this.type, this.token, this.versionid).then((batlist: Array<any>) => {
       if (batlist && batlist.length > 0) {
         this.batchbuildings = batlist;
@@ -57,7 +80,7 @@ export class FormalinspectionPage {
       } else {
         this.nodata = true;
       }
-      console.log("initbatch"+this.nodata);
+      console.log("initbatch" + this.nodata);
       console.log(this.batchbuildings);
       this.nativeservice.hideLoading();
     }).catch(e => {
@@ -75,17 +98,17 @@ export class FormalinspectionPage {
       this.navCtrl.push(FloorPage, { "projid": this.projid, "batchid": batchid, "building": building, "type": this.type, "projname": this.projname });
     }
     else {
-      this.dialogs.confirm('有数据未更新，请先更新数据', '', ['暂不更新', '立即更新']).then(val => {        
-        if (val == 1) {          
+      this.dialogs.confirm('有数据未更新，请先更新数据', '', ['暂不更新', '立即更新']).then(val => {
+        if (val == 1) {
           this.navCtrl.push(FloorPage, { "projid": this.projid, "batchid": batchid, "building": building, "type": this.type, "projname": this.projname });
         }
-        else {          
+        else {
           if (building.needtype == 1) {
             this.downloadclicked(batchid, building).then(v => {
               this.navCtrl.push(FloorPage, { "projid": this.projid, "batchid": batchid, "building": building, "type": this.type, "projname": this.projname });
             })
           }
-          else if (building.needtype == 2) {            
+          else if (building.needtype == 2) {
             this.uploadclicked(batchid, building).then(v => {
               this.navCtrl.push(FloorPage, { "projid": this.projid, "batchid": batchid, "building": building, "type": this.type, "projname": this.projname });
             })
@@ -99,7 +122,7 @@ export class FormalinspectionPage {
       })
     }
   }
-  
+
   uploadclicked(batchid, building): Promise<any> {
     return new Promise((resolve) => {
       let promise = new Promise((resolve) => {

@@ -5,6 +5,7 @@ import { Signature } from '../signature/signature';
 import { initBaseDB } from '../../providers/initBaseDB';
 import { Md5 } from "ts-md5/dist/md5";
 import { LocalStorage } from '../../providers/local-storage';
+import { NativeService } from '../../providers/nativeservice';
 
 @Component({
     selector: 'page-receipt',
@@ -22,6 +23,7 @@ export class ReceiptPage {
     username: string;
     type: number;
     readonly: boolean;
+    titlestr:string = '';
     @ViewChild(SignaturePad) signaturePad: SignaturePad;
     @ViewChild('contentEl') contentEl: ElementRef;
     isEmpty = true;
@@ -32,7 +34,7 @@ export class ReceiptPage {
         'canvasHeight': 180
     };
 
-    constructor(public navCtrl: NavController, public navParams: NavParams, public initBaseDB: initBaseDB, public localStorage: LocalStorage) {
+    constructor(public navCtrl: NavController, public navParams: NavParams, public initBaseDB: initBaseDB, public localStorage: LocalStorage, public nativeservice: NativeService) {
         //this.viewType = navParams.get('viewType');
         this.satDim = [];
         this.issueList = [];
@@ -48,6 +50,11 @@ export class ReceiptPage {
         this.receiptInfo.roomId = navParams.get('roomid');
         this.receiptInfo.roomName = navParams.get('roomname');
         this.type = navParams.get('type');
+        if (this.type == 2){
+            this.titlestr = '接待';
+        } else {
+            this.titlestr = '交付';
+        }
         this.receiptInfo.additionNote = '';
         this.localStorage.getItem('curuser').then(val => {
             this.userid = val.userid; this.username = val.username;
@@ -63,26 +70,28 @@ export class ReceiptPage {
     }
 
     initdata() {
-        this.initBaseDB.getroomdetails(this.receiptInfo.roomId, this.receiptInfo.batchid).then(val => {
+        this.initBaseDB.getroomdetails(this.receiptInfo.roomId, this.receiptInfo.batchid, this.type).then(val => {
             console.log("roomdetails:" + JSON.stringify(val.rows.item(0)));
             if (val.rows.length > 0) {
                 if (val.rows.item(0).CustId != 'undefined')
                     this.receiptInfo.ownerName = val.rows.item(0).CustId;
-                if (val.rows.item(0).CustPhone != 'undefined'){
-                    this.receiptInfo.ownerPhone = val.rows.item(0).CustPhone.substr(0,3) + "########"; 
-                    if (this.receiptInfo.ownerPhone == '########'){
-                      this.receiptInfo.ownerPhone = '';
+                if (val.rows.item(0).CustPhone != 'undefined') {
+                    this.receiptInfo.ownerPhone = val.rows.item(0).CustPhone.substr(0, 3) + "########";
+                    if (this.receiptInfo.ownerPhone == '########') {
+                        this.receiptInfo.ownerPhone = '';
                     }
-                }                                     
-                console.log(val.rows.item(0).AmmeterReading);
-                if (val.rows.item(0).AmmeterReading > 0)
-                    this.receiptInfo.electricMeter = val.rows.item(0).AmmeterReading;
-                if (val.rows.item(0).WaterMeterReading > 0)
-                    this.receiptInfo.waterMeter = val.rows.item(0).WaterMeterReading;
-                if (val.rows.item(0).GasMeterReading > 0)
-                    this.receiptInfo.gasMeter = val.rows.item(0).GasMeterReading;
-                if (val.rows.item(0).KeyRetentionStatus > 0)
-                    this.receiptInfo.keyReserve = val.rows.item(0).KeyRetentionStatus;
+                }
+                if (this.type == 3) {
+                    console.log(val.rows.item(0).AmmeterReading);
+                    if (val.rows.item(0).AmmeterReading > 0)
+                        this.receiptInfo.electricMeter = val.rows.item(0).AmmeterReading;
+                    if (val.rows.item(0).WaterMeterReading > 0)
+                        this.receiptInfo.waterMeter = val.rows.item(0).WaterMeterReading;
+                    if (val.rows.item(0).GasMeterReading > 0)
+                        this.receiptInfo.gasMeter = val.rows.item(0).GasMeterReading;
+                    if (val.rows.item(0).KeyRetentionStatus > 0)
+                        this.receiptInfo.keyReserve = val.rows.item(0).KeyRetentionStatus;
+                }
                 let dt: Date;
                 if (val.rows.item(0).TransDate) {
                     dt = new Date(val.rows.item(0).TransDate);
@@ -98,12 +107,12 @@ export class ReceiptPage {
                 this.receiptInfo.additionNote = val.rows.item(0).Remark;
                 this.initBaseDB.getimagedata(this.receiptInfo.projId, val.rows.item(0).ImgSign).then(v => {
                     if (v && v.rows.length > 0) {
-                    //     this.receiptInfo.ownerSign = "assets/img/little.jpg";
-                    // } else {
+                        //     this.receiptInfo.ownerSign = "assets/img/little.jpg";
+                        // } else {
                         this.receiptInfo.ownerSign = 'data:image/png;base64,' + v.rows.item(0).src;
                     }
                 })
-                this.initBaseDB.getCustSatisfactions(this.receiptInfo.roomId).then(v2 => {
+                this.initBaseDB.getCustSatisfactions(this.receiptInfo.roomId, this.type).then(v2 => {
                     if (v2) {
                         for (var i = 0; i < v2.rows.length; i++) {
                             console.log(JSON.stringify(v2.rows.item(i)));
@@ -119,7 +128,7 @@ export class ReceiptPage {
                 // this.receiptInfo.satisfactionSystem = 5;                
             }
         })
-        this.initBaseDB.getroomissueinfo(this.receiptInfo.roomId, 3).then(val => {
+        this.initBaseDB.getroomissueinfo(this.receiptInfo.roomId, this.type).then(val => {
             if (val.rows.length > 0) {
                 for (var j = 0; j < val.rows.length; j++) {
                     console.log(JSON.stringify(val.rows.item(j)));
@@ -149,32 +158,44 @@ export class ReceiptPage {
 
     cansubmit(): boolean {
         let ret: boolean; ret = true;
-        if (!this.receiptInfo.electricMeter && this.receiptInfo.electricMeter != 0 ) {
-            alert("电表读数必填."); ret = false;
-        }
-        if (!this.receiptInfo.waterMeter && this.receiptInfo.waterMeter != 0) {
-            alert("水表读数必填."); ret = false;
-        }
-        if (!this.receiptInfo.gasMeter && this.receiptInfo.gasMeter != 0) {
-            alert("气表读数必填."); ret = false;
-        }
-        if (!this.receiptInfo.keyReserve && this.receiptInfo.keyReserve != 0) {
-            alert("钥匙留用必填."); ret = false;
-        }
-        if (this.receiptInfo.electricMeter.toString() == '' ) {
-            alert("电表读数只能填写数字."); ret = false;
-        }
-        if (this.receiptInfo.waterMeter.toString() == '') {
-            alert("水表读数只能填写数字."); ret = false;
-        }
-        if (this.receiptInfo.gasMeter.toString() == '') {
-            alert("气表读数只能填写数字."); ret = false;
-        }
-        if (this.receiptInfo.keyReserve.toString() == '') {
-            alert("钥匙留用只能填写数字."); ret = false;
-        }
-        
-        return ret;
+        let err:string = "";
+        if (this.type == 3) {
+            if (!this.receiptInfo.electricMeter && this.receiptInfo.electricMeter != 0) {
+                err = "电表读数必填. "; ret = false;
+            }
+            if (!this.receiptInfo.waterMeter && this.receiptInfo.waterMeter != 0) {
+                err += "水表读数必填. ";  ret = false;
+            }
+            if (!this.receiptInfo.gasMeter && this.receiptInfo.gasMeter != 0) {
+                err += "气表读数必填. "; ret = false;
+            }
+            if (!this.receiptInfo.keyReserve && this.receiptInfo.keyReserve != 0) {
+                err += "钥匙留用必填. "; ret = false;
+            }
+            if (this.receiptInfo.electricMeter.toString() == '') {
+                err += "电表读数只能填写数字. "; ret = false;
+            }
+            if (this.receiptInfo.waterMeter.toString() == '') {
+                err += "水表读数只能填写数字. "; ret = false;
+            }
+            if (this.receiptInfo.gasMeter.toString() == '') {
+                err += "气表读数只能填写数字. "; ret = false;
+            }
+            if (this.receiptInfo.keyReserve.toString() == '') {
+                err += "钥匙留用只能填写数字. "; ret = false;
+            }
+            if (ret == false){
+                this.nativeservice.alert(err).then(v=>{
+                    return false;
+                }).catch(v=>{
+                    return false;
+                })
+            } else {
+                return true;
+            }
+        } else {
+           return ret;
+        }        
     }
 
     doSubmit() {
@@ -206,43 +227,48 @@ export class ReceiptPage {
                 console.log(v2);
                 let now = new Date();
                 let sqls = [];
-                
-                let curtime:string = now.toLocaleDateString()+" "+now.getHours().toString()+":"+now.getMinutes()+":"+now.getSeconds();
-        
-                let sql = "update FormalRoomDetails set versionid = 0,RoomStatus = '已交付', Transdate ='"+curtime+"', Remark = '#Remark#',EngineerPhone = '#userid#',EngineerName = '#username#',ImgSign = '#imgsign#',AmmeterReading=#ammeter#,WaterMeterReading=#water#,GasMeterReading=#gas#,KeyRetentionStatus=#key# where roomid = '#roomid#' ";
-                sql = sql.replace('#Remark#', this.receiptInfo.additionNote).replace('#userid#', this.userid).replace('#username#', this.userid).replace('#roomid#', this.receiptInfo.roomId);
+
+                let curtime: string = now.toLocaleDateString() + " " + now.getHours().toString() + ":" + now.getMinutes() + ":" + now.getSeconds();
+                let sql = '';
+                if (this.type == 3) {
+                    sql = "update FormalRoomDetails set versionid = 0,RoomStatus = '已交付', Transdate ='" + curtime + "', Remark = '#Remark#',EngineerPhone = '#userid#',EngineerName = '#username#',ImgSign = '#imgsign#',AmmeterReading=#ammeter#,WaterMeterReading=#water#,GasMeterReading=#gas#,KeyRetentionStatus=#key# where roomid = '#roomid#' ";
+                } else {
+                    sql = "update OpenRoomDetails set versionid = 0,RoomStatus = '已接待', Transdate ='" + curtime + "', Remark = '#Remark#',EngineerPhone = '#userid#',EngineerName = '#username#',ImgSign = '#imgsign#' where roomid = '#roomid#' ";
+                }
+                sql = sql.replace('#Remark#', this.receiptInfo.additionNote).replace('#userid#', this.userid).replace('#username#', this.username).replace('#roomid#', this.receiptInfo.roomId);
                 console.log(this.receiptInfo.electricMeter);
                 if (v2) {
                     sql = sql.replace('#imgsign#', v2);
                 } else {
                     sql = sql.replace('#imgsign#', "");
                 }
-                if (this.receiptInfo.electricMeter == 0) {
-                    sql = sql.replace('#ammeter#', '0');
-                } else {
-                    sql = sql.replace('#ammeter#', this.receiptInfo.electricMeter.toString());
+                if (this.type == 3) {
+                    if (this.receiptInfo.electricMeter == 0) {
+                        sql = sql.replace('#ammeter#', '0');
+                    } else {
+                        sql = sql.replace('#ammeter#', this.receiptInfo.electricMeter.toString());
+                    }
+                    if (this.receiptInfo.waterMeter == 0) {
+                        sql = sql.replace('#water#', '0');
+                    } else {
+                        sql = sql.replace('#water#', this.receiptInfo.waterMeter.toString());
+                    }
+                    if (this.receiptInfo.gasMeter == 0) {
+                        sql = sql.replace('#gas#', '0');
+                    } else {
+                        sql = sql.replace('#gas#', this.receiptInfo.gasMeter.toString());
+                    }
+                    if (this.receiptInfo.keyReserve == 0) {
+                        sql = sql.replace('#key#', '0');
+                    } else {
+                        sql = sql.replace('#key#', this.receiptInfo.keyReserve.toString());
+                    }
                 }
-                if (this.receiptInfo.waterMeter == 0) {
-                    sql = sql.replace('#water#', '0');
-                } else {
-                    sql = sql.replace('#water#', this.receiptInfo.waterMeter.toString());
-                }
-                if (this.receiptInfo.gasMeter == 0) {
-                    sql = sql.replace('#gas#', '0');
-                } else {
-                    sql = sql.replace('#gas#', this.receiptInfo.gasMeter.toString());
-                }
-                if (this.receiptInfo.keyReserve == 0) {
-                    sql = sql.replace('#key#', '0');
-                } else {
-                    sql = sql.replace('#key#', this.receiptInfo.keyReserve.toString());
-                }
-
                 //Transdate = '#datetime#', sql = sql.replace('#datetime#',now.toLocaleDateString()+)
                 console.log(sql);
                 sqls.push(sql);
                 if (this.satDim.length > 0) {
-                    sql = "insert into CustRoomSatisfactions (ProjId,VersionId,BuildingId,BatchId,RoomId,SatisfiedDim,Score) values #value# "
+                    sql = "insert into CustRoomSatisfactions (ProjId,VersionId,BuildingId,BatchId,RoomId,SatisfiedDim,Score,Type) values #value# "
                     let value = [];
                     for (var i = 0; i < this.satDim.length; i++) {
                         let tmpvalue = [];
@@ -253,6 +279,7 @@ export class ReceiptPage {
                         tmpvalue.push("'" + this.receiptInfo.roomId + "'");
                         tmpvalue.push("'" + this.satDim[i].dim + "'");
                         tmpvalue.push(this.satDim[i].score);
+                        tmpvalue.push(this.type);
                         value.push("(#row#)".replace("#row#", tmpvalue.join(',')));
                     }
                     console.log(value.join(','));
@@ -263,8 +290,7 @@ export class ReceiptPage {
             }).then(v3 => {
                 this.initBaseDB.updateuploadflag(this.receiptInfo.projId, this.receiptInfo.batchid, this.receiptInfo.buildingId, this.type);
             }).catch(err => {
-                console.log('交付信息提交失败:' + err);
-                alert('交付信息提交失败:' + err);
+                console.log(this.titlestr+'信息提交失败:' + err);                
             }).then(v4 => {
                 this.navCtrl.pop();
             })

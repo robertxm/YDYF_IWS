@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>
       退回原因
     </ion-title>
@@ -36,6 +36,15 @@
 
 <ion-footer>
 <ion-item>
-	<button ion-button full (click)="confirmclick()" style="height:2.8em" color="primary">确定</button>
+  <table style="width:100%;">
+      <tr>
+        <td width="30%">
+          <button ion-button block color="danger" style="height:2.8em" (click)="cancel()">取消</button>
+        </td> 
+        <td >
+          <button ion-button full (click)="confirmclick()" style="height:2.8em" color="primary">确定</button>
+        </td>               
+      </tr>
+    </table>		
 	</ion-item>
 </ion-footer>

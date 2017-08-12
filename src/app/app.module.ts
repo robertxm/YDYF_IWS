@@ -42,6 +42,7 @@ import { BuilderIssuePosition } from '../pages/builder-issue-position/builder-is
 import { BuilderReturnIssue } from '../pages/builder-return-issue/builder-return-issue'; 
 import { AssignreturnPage } from '../pages/assignreturn/assignreturn'; 
 import { BuildermaintenancePage } from '../pages/buildermaintenance/buildermaintenance'; 
+import { PreroomspassPage } from '../pages/preroomspass/preroomspass'; 
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -60,6 +61,7 @@ import {AppVersion} from '@ionic-native/app-version';
 import {File} from '@ionic-native/file';
 import {FileTransfer, FileTransferObject} from '@ionic-native/file-transfer';
 import {InAppBrowser} from '@ionic-native/in-app-browser';
+import { FileOpener } from '@ionic-native/file-opener';
 
 @NgModule({
   declarations: [
@@ -99,7 +101,8 @@ import {InAppBrowser} from '@ionic-native/in-app-browser';
     BuilderIssuePosition,
     BuilderReturnIssue,
     AssignreturnPage,
-    BuildermaintenancePage
+    BuildermaintenancePage,
+    PreroomspassPage
   ],
   imports: [
     BrowserModule,
@@ -149,7 +152,8 @@ import {InAppBrowser} from '@ionic-native/in-app-browser';
     BuilderIssuePosition,
     BuilderReturnIssue,
     AssignreturnPage,
-    BuildermaintenancePage
+    BuildermaintenancePage,
+    PreroomspassPage
   ],
   providers: [
     StatusBar,
@@ -165,7 +169,7 @@ import {InAppBrowser} from '@ionic-native/in-app-browser';
     Dialogs,
     Toast,
     Contacts,
-    Clipboard,AppVersion,File,FileTransfer, FileTransferObject,InAppBrowser,
+    Clipboard,AppVersion,File,FileTransfer, FileTransferObject,InAppBrowser,FileOpener,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

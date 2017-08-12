@@ -21,7 +21,7 @@ export class BuilderCloseIssue {
 	reasonsovertimes = ["上个工序未按时完成", "人手不够", "部分工程师请假", "其他"];
 	//{"issueid":this.issueid,"userid":this.userid,"username":this.username,"images":this.images,"imagesfixed":this.imagesfixed}
 	constructor(public navCtrl: NavController, public navParams: NavParams, private camera: Camera, private modalCtrl: ModalController,
-		public params: NavParams, private viewCtrl: ViewController) {
+		public params: NavParams, private nativeService: NativeService, private viewCtrl: ViewController) {
 	}
 
 	ionViewDidLoad() {
@@ -44,10 +44,10 @@ export class BuilderCloseIssue {
 		let ret: boolean = true;
 		if (this.overdays > 0 && this.reasonovertime == '') {
 			ret = false;
-			alert("已超时，需选择超时原因.")
+			this.nativeService.alert("已超时，需选择超时原因.")
 		} else if (this.reasonovertime == "其他" && this.reasonovertimeother == '') {
 			ret = false;
-			alert("超时原因选择其他，需填写其他说明.");
+			this.nativeService.alert("超时原因选择其他，需填写其他说明.");
 		}
 		return ret;
 	}
@@ -71,7 +71,9 @@ export class BuilderCloseIssue {
 			destinationType: this.camera.DestinationType.DATA_URL,
 			encodingType: this.camera.EncodingType.JPEG,
 			mediaType: this.camera.MediaType.PICTURE,
-			correctOrientation: true
+			correctOrientation: true,
+		    targetHeight:800,
+			targetWidth:480
 		}
 
 		this.camera.getPicture(options).then((imageData) => {
