@@ -26,18 +26,20 @@ export class AboutPage {
   }
 
   download() {
-    this.alertCtrl.create({
-      title: '升级',
-      subTitle: '发现新版本,是否立即升级？',
-      buttons: [{ text: '取消' },
-      {
-        text: '确定',
-        handler: () => {
-          this.nativeService.downloadApp(this.token);
+    if (this.versionstr != "已是最新版本") {
+      this.alertCtrl.create({
+        title: '升级',
+        subTitle: '发现新版本,是否立即升级？',
+        buttons: [{ text: '取消' },
+        {
+          text: '确定',
+          handler: () => {
+            this.nativeService.downloadApp(this.token);
+          }
         }
-      }
-      ]
-    }).present();
+        ]
+      }).present();
+    }
     //this.nativeService.downloadApp(this.token)
   }
 }

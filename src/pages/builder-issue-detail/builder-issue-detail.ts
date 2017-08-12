@@ -72,7 +72,7 @@ export class BuilderIssueDetail {
     this.images = []; this.imagesfixed = [];
     this.return_log = [];
     this.initBaseDB.getbuilderissueinfo(this.issueid, this.issue.type).then((v: any) => {
-      let issuelist: any;
+      let issuelist: any;  console.log(v);console.log(v[1]);
       let val: any; val = v[0];
       issuelist = val.rows.item(0);
       console.log(JSON.stringify(val.rows.item(0)));
@@ -144,7 +144,7 @@ export class BuilderIssueDetail {
       }
       console.log("log:" + v[1]);
       let log: any; log = v[1];
-      for (var i = 1; i < log.rows.length; i++) {
+      for (var i = 0; i < log.rows.length; i++) {
         console.log(JSON.stringify(log.rows.item(i)));
         dt = new Date(log.rows.item(i).LogDate);
         this.return_log.push({ return_person: log.rows.item(i).UserName, return_date: dt.toLocaleString(), return_message: log.rows.item(i).ReturnReason })
@@ -153,7 +153,6 @@ export class BuilderIssueDetail {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad BuilderIssueDetail');
     this.loadissueinfo();
   }
   //results.push({ reason: result, img: this.imagesafter,fixeddesc:this.fixeddesc });

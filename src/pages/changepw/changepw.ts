@@ -47,7 +47,10 @@ export class ChangePWPage {
               this.nativeservice.showToast("修改成功");
               this.navCtrl.pop();
             })
-          })
+          }).catch(e=>{
+            console.log(e);
+            this.nativeservice.showToast("修改失败");
+          })          
         }})
       }
 

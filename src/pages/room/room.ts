@@ -164,7 +164,8 @@ export class RoomPage implements OnInit {
 			});
 		})
 		this.initBaseDB.getroomdetails(this.roomid, this.batchid, this.type).then(val => {
-			if (val) {
+			console.log("roomdetails:"+val);
+			if (val && val.rows.length > 0) {
 				if (val.rows.item(0).RoomStatus == "已交付" || val.rows.item(0).RoomStatus == "已通过" || val.rows.item(0).RoomStatus == "已接待") {
 					this.readonly = true;
 				}

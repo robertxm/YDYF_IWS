@@ -45,6 +45,7 @@ export class AddmembermanualPage {
             console.log(res[0][0][1]);
           }
         }).catch(e => {
+          this.nativeservice.showToast("添加失败.");
           console.log(e);
         })
       }

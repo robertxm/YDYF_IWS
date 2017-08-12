@@ -224,6 +224,9 @@ export class initBaseDB {
             }
           })
         }
+      }).catch(e => {
+        console.log(e);
+        this.nativeservice.hideLoading();
       })
     })
   }
@@ -369,7 +372,10 @@ export class initBaseDB {
                 resolve(this.localStorage.setItem('curproj', { projid: v.projid, projname: v.projname, versionid: res[0][1][0], needupd: 0 }));
               })
             })
-          });
+          }).catch(e => {
+            console.log(e);
+            this.nativeservice.hideLoading();
+          })
         }
         else {
           resolve(1);
@@ -447,6 +453,9 @@ export class initBaseDB {
                     this.nativeservice.hideLoading();
                     console.log(err);
                   }))
+                }).catch(e => {
+                  console.log(e);
+                  this.nativeservice.hideLoading();
                 })
               }
               else {
@@ -535,6 +544,9 @@ export class initBaseDB {
             }
           }
         })
+      }).catch(e => {
+        console.log(e);
+        this.nativeservice.hideLoading();
       })
     })
   }
@@ -678,6 +690,9 @@ export class initBaseDB {
             }))
           }
         })
+      }).catch(e => {
+        console.log(e);
+        this.nativeservice.hideLoading();
       })
     })
   }
@@ -875,6 +890,7 @@ export class initBaseDB {
         return this.updatebuildinginfo(token, projid, batchid, buildingid, type);
       }).catch(err => {
         console.log("楼栋上传失败:" + err);
+        this.nativeservice.hideLoading();
       }))
     })
   }
@@ -904,6 +920,7 @@ export class initBaseDB {
         console.log("v3");
         return this.updateDynamicsPack(v3[0], projid, batchid, buildingid, type);
       }).catch(err => {
+        this.nativeservice.hideLoading();
         return console.log("楼栋更新失败:" + err);
       }))
     })
@@ -1884,41 +1901,41 @@ export class initBaseDB {
           }).then((v2) => {
             return this.initBaseTable("PreCheckIssues", "VersionId integer,BatchId,IssueId,RoomId,PositionName,CheckItemName,PlusDesc,IssueDesc,UrgencyId,ImgBefore1,ImgBefore2,ImgBefore3,ImgAfter1,ImgAfter2,ImgAfter3,Id primary key,IssueStatus,VendId,ResponVendId,ProjId,Manager,ResponsibleId,IssueType,RegisterDate datetime,AppointDate datetime,LimitDate datetime,ReFormDate datetime,ReturnDate datetime,ReturnReason,ReturnNum integer default 0 ,BuildingId,EngineerId,ReviewDate datetime,x integer,y integer,ResponsibleName,ResponsiblePhone,EngineerName,EngineerPhone,APImg,FloorName,BuildingName,RoomName,ManagerName,ManagerPhone,BatchName,ReassignDate datetime,ReassignDesc,ReasonbyOver,fixedDesc,ImgWidth integer");
           }).then((v3) => {
-            return this.initBaseTable("PreCheckLogs", "BatchId,IssueId,IssueStatus,LogDate datetime,UserId,UserName,Origin default 'APP',DueDate datetime,ReasonbyOver,IsReturn integer default 0, ReturnReason,ProjId,VersionId,ID");
+            return this.initBaseTable("PreCheckLogs", "BatchId,IssueId,IssueStatus,LogDate datetime,UserId,UserName,Origin default 'APP',DueDate datetime,ReasonbyOver,IsReturn, ReturnReason,ProjId,VersionId,ID");
           }).then((v4) => {
             return this.initBaseTable("tmpPreCheckIssues", "VersionId integer,BatchId,IssueId,RoomId,PositionName,CheckItemName,PlusDesc,IssueDesc,UrgencyId,ImgBefore1,ImgBefore2,ImgBefore3,ImgAfter1,ImgAfter2,ImgAfter3,Id primary key,IssueStatus,VendId,ResponVendId,ProjId,Manager,ResponsibleId,IssueType,RegisterDate datetime,AppointDate datetime,LimitDate datetime,ReFormDate datetime,ReturnDate datetime,ReturnReason,ReturnNum integer default 0 ,BuildingId,EngineerId,ReviewDate datetime,x integer,y integer,ResponsibleName,ResponsiblePhone,EngineerName,EngineerPhone,APImg,FloorName,BuildingName,RoomName,ManagerName,ManagerPhone,BatchName,ReassignDate datetime,ReassignDesc,ReasonbyOver,fixedDesc,ImgWidth integer");
           }).then((v5) => {
-            return this.initBaseTable("tmpPreCheckLogs", "BatchId,IssueId,IssueStatus,LogDate datetime,UserId,UserName,Origin default 'APP',DueDate datetime,ReasonbyOver,IsReturn integer default 0, ReturnReason,ProjId,VersionId,ID");
+            return this.initBaseTable("tmpPreCheckLogs", "BatchId,IssueId,IssueStatus,LogDate datetime,UserId,UserName,Origin default 'APP',DueDate datetime,ReasonbyOver,IsReturn, ReturnReason,ProjId,VersionId,ID");
           }).then((v6) => {
             return this.initBaseTable("uplPreCheckIssues", "BatchId,IssueId,RoomId,PositionId,CheckItemId,PlusDesc,IssueDesc,UrgencyId,ImgBefore1,ImgBefore2,ImgBefore3,ImgAfter1,ImgAfter2,ImgAfter3,Id primary key,IssueStatus,VendId,ResponVendId,ProjId,Manager,ResponsibleId,IssueType,RegisterDate datetime,AppointDate datetime,LimitDate datetime,ReFormDate datetime,CloseDate datetime,CloseReason,CancelDate datetime,CancelReason,VersionId integer,ImgClose1,ImgClose2,ImgClose3,ReturnDate datetime,ReturnReason,ReturnNum integer,BuildingId,EngineerId,ReviewDate datetime,x integer,y integer,ResponsibleName,ResponsiblePhone,EngineerName,EngineerPhone,ManagerName,ManagerPhone,ReassignDate datetime,ReassignDesc,ReasonbyOver,fixedDesc");
           }).then((v2) => {
             return this.initBaseTable("OpenCheckIssues", "VersionId integer,BatchId,IssueId,RoomId,PositionName,CheckItemName,PlusDesc,IssueDesc,UrgencyId,ImgBefore1,ImgBefore2,ImgBefore3,ImgAfter1,ImgAfter2,ImgAfter3,Id primary key,IssueStatus,VendId,ResponVendId,ProjId,Manager,ResponsibleId,IssueType,RegisterDate datetime,AppointDate datetime,LimitDate datetime,ReFormDate datetime,ReturnDate datetime,ReturnReason,ReturnNum integer default 0 ,BuildingId,EngineerId,ReviewDate datetime,x integer,y integer,ResponsibleName,ResponsiblePhone,EngineerName,EngineerPhone,APImg,FloorName,BuildingName,RoomName,ManagerName,ManagerPhone,BatchName,ReassignDate datetime,ReassignDesc,ReasonbyOver,fixedDesc,ImgWidth integer");
           }).then((v3) => {
-            return this.initBaseTable("OpenCheckLogs", "BatchId,IssueId,IssueStatus,LogDate datetime,UserId,UserName,Origin default 'APP',DueDate datetime,ReasonbyOver,IsReturn integer default 0, ReturnReason,ProjId,VersionId,ID");
+            return this.initBaseTable("OpenCheckLogs", "BatchId,IssueId,IssueStatus,LogDate datetime,UserId,UserName,Origin default 'APP',DueDate datetime,ReasonbyOver,IsReturn, ReturnReason,ProjId,VersionId,ID");
           }).then((v4) => {
             return this.initBaseTable("tmpOpenCheckIssues", "VersionId integer,BatchId,IssueId,RoomId,PositionName,CheckItemName,PlusDesc,IssueDesc,UrgencyId,ImgBefore1,ImgBefore2,ImgBefore3,ImgAfter1,ImgAfter2,ImgAfter3,Id primary key,IssueStatus,VendId,ResponVendId,ProjId,Manager,ResponsibleId,IssueType,RegisterDate datetime,AppointDate datetime,LimitDate datetime,ReFormDate datetime,ReturnDate datetime,ReturnReason,ReturnNum integer default 0 ,BuildingId,EngineerId,ReviewDate datetime,x integer,y integer,ResponsibleName,ResponsiblePhone,EngineerName,EngineerPhone,APImg,FloorName,BuildingName,RoomName,ManagerName,ManagerPhone,BatchName,ReassignDate datetime,ReassignDesc,ReasonbyOver,fixedDesc,ImgWidth integer");
           }).then((v5) => {
-            return this.initBaseTable("tmpOpenCheckLogs", "BatchId,IssueId,IssueStatus,LogDate datetime,UserId,UserName,Origin default 'APP',DueDate datetime,ReasonbyOver,IsReturn integer default 0, ReturnReason,ProjId,VersionId,ID");
+            return this.initBaseTable("tmpOpenCheckLogs", "BatchId,IssueId,IssueStatus,LogDate datetime,UserId,UserName,Origin default 'APP',DueDate datetime,ReasonbyOver,IsReturn, ReturnReason,ProjId,VersionId,ID");
           }).then((v6) => {
             return this.initBaseTable("uplOpenCheckIssues", "BatchId,IssueId,RoomId,PositionId,CheckItemId,PlusDesc,IssueDesc,UrgencyId,ImgBefore1,ImgBefore2,ImgBefore3,ImgAfter1,ImgAfter2,ImgAfter3,Id primary key,IssueStatus,VendId,ResponVendId,ProjId,Manager,ResponsibleId,IssueType,RegisterDate datetime,AppointDate datetime,LimitDate datetime,ReFormDate datetime,CloseDate datetime,CloseReason,CancelDate datetime,CancelReason,VersionId integer,ImgClose1,ImgClose2,ImgClose3,ReturnDate datetime,ReturnReason,ReturnNum integer,BuildingId,EngineerId,ReviewDate datetime,x integer,y integer,ResponsibleName,ResponsiblePhone,EngineerName,EngineerPhone,ManagerName,ManagerPhone,ReassignDate datetime,ReassignDesc,ReasonbyOver,fixedDesc");
           }).then((v2) => {
             return this.initBaseTable("FormalCheckIssues", "VersionId integer,BatchId,IssueId,RoomId,PositionName,CheckItemName,PlusDesc,IssueDesc,UrgencyId,ImgBefore1,ImgBefore2,ImgBefore3,ImgAfter1,ImgAfter2,ImgAfter3,Id primary key,IssueStatus,VendId,ResponVendId,ProjId,Manager,ResponsibleId,IssueType,RegisterDate datetime,AppointDate datetime,LimitDate datetime,ReFormDate datetime,ReturnDate datetime,ReturnReason,ReturnNum integer default 0 ,BuildingId,EngineerId,ReviewDate datetime,x integer,y integer,ResponsibleName,ResponsiblePhone,EngineerName,EngineerPhone,APImg,FloorName,BuildingName,RoomName,ManagerName,ManagerPhone,BatchName,ReassignDate datetime,ReassignDesc,ReasonbyOver,fixedDesc,ImgWidth integer");
           }).then((v3) => {
-            return this.initBaseTable("FormalCheckLogs", "BatchId,IssueId,IssueStatus,LogDate datetime,UserId,UserName,Origin default 'APP',DueDate datetime,ReasonbyOver,IsReturn integer default 0, ReturnReason,ProjId,VersionId,ID");
+            return this.initBaseTable("FormalCheckLogs", "BatchId,IssueId,IssueStatus,LogDate datetime,UserId,UserName,Origin default 'APP',DueDate datetime,ReasonbyOver,IsReturn, ReturnReason,ProjId,VersionId,ID");
           }).then((v4) => {
             return this.initBaseTable("tmpFormalCheckIssues", "VersionId integer,BatchId,IssueId,RoomId,PositionName,CheckItemName,PlusDesc,IssueDesc,UrgencyId,ImgBefore1,ImgBefore2,ImgBefore3,ImgAfter1,ImgAfter2,ImgAfter3,Id primary key,IssueStatus,VendId,ResponVendId,ProjId,Manager,ResponsibleId,IssueType,RegisterDate datetime,AppointDate datetime,LimitDate datetime,ReFormDate datetime,ReturnDate datetime,ReturnReason,ReturnNum integer default 0 ,BuildingId,EngineerId,ReviewDate datetime,x integer,y integer,ResponsibleName,ResponsiblePhone,EngineerName,EngineerPhone,APImg,FloorName,BuildingName,RoomName,ManagerName,ManagerPhone,BatchName,ReassignDate datetime,ReassignDesc,ReasonbyOver,fixedDesc,ImgWidth integer");
           }).then((v5) => {
-            return this.initBaseTable("tmpFormalCheckLogs", "BatchId,IssueId,IssueStatus,LogDate datetime,UserId,UserName,Origin default 'APP',DueDate datetime,ReasonbyOver,IsReturn integer default 0, ReturnReason,ProjId,VersionId,ID");
+            return this.initBaseTable("tmpFormalCheckLogs", "BatchId,IssueId,IssueStatus,LogDate datetime,UserId,UserName,Origin default 'APP',DueDate datetime,ReasonbyOver,IsReturn, ReturnReason,ProjId,VersionId,ID");
           }).then((v6) => {
             return this.initBaseTable("uplFormalCheckIssues", "BatchId,IssueId,RoomId,PositionId,CheckItemId,PlusDesc,IssueDesc,UrgencyId,ImgBefore1,ImgBefore2,ImgBefore3,ImgAfter1,ImgAfter2,ImgAfter3,Id primary key,IssueStatus,VendId,ResponVendId,ProjId,Manager,ResponsibleId,IssueType,RegisterDate datetime,AppointDate datetime,LimitDate datetime,ReFormDate datetime,CloseDate datetime,CloseReason,CancelDate datetime,CancelReason,VersionId integer,ImgClose1,ImgClose2,ImgClose3,ReturnDate datetime,ReturnReason,ReturnNum integer,BuildingId,EngineerId,ReviewDate datetime,x integer,y integer,ResponsibleName,ResponsiblePhone,EngineerName,EngineerPhone,ManagerName,ManagerPhone,ReassignDate datetime,ReassignDesc,ReasonbyOver,fixedDesc");
           }).then((v2) => {
             return this.initBaseTable("ServiceCheckIssues", "VersionId integer,BatchId,IssueId,RoomId,PositionName,CheckItemName,PlusDesc,IssueDesc,UrgencyId,ImgBefore1,ImgBefore2,ImgBefore3,ImgAfter1,ImgAfter2,ImgAfter3,Id primary key,IssueStatus,VendId,ResponVendId,ProjId,Manager,ResponsibleId,IssueType,RegisterDate datetime,AppointDate datetime,LimitDate datetime,ReFormDate datetime,ReturnDate datetime,ReturnReason,ReturnNum integer default 0 ,BuildingId,EngineerId,ReviewDate datetime,x integer,y integer,ResponsibleName,ResponsiblePhone,EngineerName,EngineerPhone,APImg,FloorName,BuildingName,RoomName,ManagerName,ManagerPhone,BatchName,ReassignDate datetime,ReassignDesc,ReasonbyOver,fixedDesc,ImgWidth integer");
           }).then((v3) => {
-            return this.initBaseTable("ServiceCheckLogs", "BatchId,IssueId,IssueStatus,LogDate datetime,UserId,UserName,Origin default 'APP',DueDate datetime,ReasonbyOver,IsReturn integer default 0, ReturnReason,ProjId,VersionId,ID");
+            return this.initBaseTable("ServiceCheckLogs", "BatchId,IssueId,IssueStatus,LogDate datetime,UserId,UserName,Origin default 'APP',DueDate datetime,ReasonbyOver,IsReturn, ReturnReason,ProjId,VersionId,ID");
           }).then((v4) => {
             return this.initBaseTable("tmpServiceCheckIssues", "VersionId integer,BatchId,IssueId,RoomId,PositionName,CheckItemName,PlusDesc,IssueDesc,UrgencyId,ImgBefore1,ImgBefore2,ImgBefore3,ImgAfter1,ImgAfter2,ImgAfter3,Id primary key,IssueStatus,VendId,ResponVendId,ProjId,Manager,ResponsibleId,IssueType,RegisterDate datetime,AppointDate datetime,LimitDate datetime,ReFormDate datetime,ReturnDate datetime,ReturnReason,ReturnNum integer default 0 ,BuildingId,EngineerId,ReviewDate datetime,x integer,y integer,ResponsibleName,ResponsiblePhone,EngineerName,EngineerPhone,APImg,FloorName,BuildingName,RoomName,ManagerName,ManagerPhone,BatchName,ReassignDate datetime,ReassignDesc,ReasonbyOver,fixedDesc,ImgWidth integer");
           }).then((v5) => {
-            return this.initBaseTable("tmpServiceCheckLogs", "BatchId,IssueId,IssueStatus,LogDate datetime,UserId,UserName,Origin default 'APP',DueDate datetime,ReasonbyOver,IsReturn integer default 0, ReturnReason,ProjId,VersionId,ID");
+            return this.initBaseTable("tmpServiceCheckLogs", "BatchId,IssueId,IssueStatus,LogDate datetime,UserId,UserName,Origin default 'APP',DueDate datetime,ReasonbyOver,IsReturn, ReturnReason,ProjId,VersionId,ID");
           }).then((v6) => {
             return this.initBaseTable("uplServiceCheckIssues", "BatchId,IssueId,RoomId,PositionId,CheckItemId,PlusDesc,IssueDesc,UrgencyId,ImgBefore1,ImgBefore2,ImgBefore3,ImgAfter1,ImgAfter2,ImgAfter3,Id primary key,IssueStatus,VendId,ResponVendId,ProjId,Manager,ResponsibleId,IssueType,RegisterDate datetime,AppointDate datetime,LimitDate datetime,ReFormDate datetime,CloseDate datetime,CloseReason,CancelDate datetime,CancelReason,VersionId integer,ImgClose1,ImgClose2,ImgClose3,ReturnDate datetime,ReturnReason,ReturnNum integer,BuildingId,EngineerId,ReviewDate datetime,x integer,y integer,ResponsibleName,ResponsiblePhone,EngineerName,EngineerPhone,ManagerName,ManagerPhone,ReassignDate datetime,ReassignDesc,ReasonbyOver,fixedDesc");
           }).then((v7) => {
@@ -2223,16 +2240,17 @@ export class initBaseDB {
         return this.db.executeSql(sql, []);
       }).then((v2: any) => {
         ret.push(v2);
-        let sql = "select LogDate,UserName,ReturnReason from #tablename# where IssueId = '#issueid#' and IsReturn = 1";
+        let sql = "select LogDate,UserName,ReturnReason, isreturn from #tablename# where IssueId = '#issueid#' ";
 
         sql = sql.replace('#tablename#', this.getissuetype(type) + 'CheckLogs');
 
         sql = sql.replace('#issueid#', issueid);
+        console.log(sql);
         return this.db.executeSql(sql, []);
-      }).then((v3: any) => {
+      }).then((v3: any) => {        
         ret.push(v3);
         console.log(ret);
-        return ret;
+        return ret;        
       }).catch(err => {
         this.warn('问题加载失败:' + err);
         throw '问题加载失败';
@@ -2607,6 +2625,7 @@ export class initBaseDB {
         console.log(v2);
         return APP_SERVE_URL.replace('/api', '') + v2[0][2][0];
       }).catch(err => {
+        this.nativeservice.hideLoading();
         this.warn('问题导出失败:' + err);
         throw '问题导出失败';
       }))
@@ -2700,9 +2719,9 @@ export class initBaseDB {
             return true;
           } else {
             //return false;
-            return this.nativeservice.alert('当前没有网络无法上传。').then(v=>{
-               throw '当前没有网络无法上传。'
-            })           
+            return this.nativeservice.alert('当前没有网络无法上传。').then(v => {
+              throw '当前没有网络无法上传。'
+            })
           }
         }).catch(err => {
           this.nativeservice.hideLoading();
@@ -2723,9 +2742,9 @@ export class initBaseDB {
         }).then((v1: any) => {
           console.log(v1);
           if (v1 == "not connecting") {
-            return this.nativeservice.alert('当前没有网络无法上传。').then(v=>{
+            return this.nativeservice.alert('当前没有网络无法上传。').then(v => {
               throw '当前没有网络无法上传。'
-            })            
+            })
           } else {
             if (v1) {
               let tmppromise = Promise.resolve(false);

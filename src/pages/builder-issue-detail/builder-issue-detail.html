@@ -89,8 +89,8 @@
       <ion-label fixed>整改时间</ion-label>
       <ion-input value="{{fixedtime}}" readonly style='color:red'></ion-input>
     </ion-item>
-
-    <ion-item-divider color="light" *ngIf="return_log!=undefined && return_log.length >= 1">退回信息</ion-item-divider>
+    <!--*ngIf="return_log!=undefined && return_log.length > 0"-->
+    <ion-item-divider color="light" *ngIf="issue.returntimes!=undefined && issue.returntimes>0">退回信息</ion-item-divider>
     <ion-item *ngFor="let r of return_log" class="item-input">
       <ion-label fixed>
         退回人<br/> 退回时间

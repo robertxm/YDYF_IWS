@@ -126,9 +126,7 @@ export class LoginPage {
           })
         }).catch(e => {
           this.nativeservice.hideLoading();
-          // this.localStorage.setItem('curproj', { projid: 'p0001', projname: '项目1' })
-          // this.localStorage.setItem('curuser', { userid: 'admin', duetime: 1498121315683, token: "ejofwijfeoiwfjewi", username: 'adminname' });
-          // this.navCtrl.push(TabsPage);
+          console.log(e);
         })
       }
     })
