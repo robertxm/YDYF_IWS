@@ -1944,6 +1944,8 @@ export class initBaseDB {
             return this.initBaseTable("uplimagetable", "Projid,fn");
           }).then((v7) => {
             return this.initBaseTable("imagetable", "projid,fn,src,status integer default 0");
+          }).then((v2) => {
+            return this.initBaseTable("tmpIssues", "LimitDate datetime,ReturnNum integer default 0 ,ResponsibleName,FloorName,BuildingName");
           }).then((v8) => {
             console.log("downloadbuilderdata");
             return this.httpService.get(APP_SERVE_URL + "/VendPack", { Token: token, projId: projid, appDateStr: null });
@@ -2142,7 +2144,133 @@ export class initBaseDB {
     })
   }
 
-  getbuilderissuelist(projid, type): Promise<Array<any>> {
+  getissuesumsql(projid, type, assign, build, floor, duedate, returntimes, groupbystr): Array<string> {
+    let sql = "";
+    let filterstr = "";
+    let sqls = [];
+    if ((assign == "全部" || assign == "负责人") && (build == "全部" || build == "楼栋") && (floor == "全部" || floor == "楼层") && (duedate == "全部" || duedate == "整改时限") && (returntimes == "全部" || returntimes == "退回次数")) {
+      filterstr = "";
+    } else {
+      if (assign != "全部" && assign != "负责人" && groupbystr != "ResponsibleName") {
+        filterstr += " and ResponsibleName = '" + assign + "' ";
+      }
+      if (build != "全部" && build != "楼栋" && groupbystr != "BuildingName") {
+        filterstr += " and BuildingName = '" + build + "' ";
+      }
+      if (floor != "全部" && floor != "楼层" && groupbystr != "FloorName") {
+        filterstr += " and FloorName = '" + floor + "' ";
+      }
+      if (duedate != "全部" && duedate != "整改时限" && groupbystr != "LimitDate") {
+        filterstr += " and LimitDate = '" + duedate + "' ";
+      }
+      if (returntimes != "全部" && returntimes != "退回次数" && groupbystr != "ReturnNum") {
+        filterstr += " and ReturnNum = " + returntimes + " ";
+      }
+    }
+
+    sql = "insert into tmpissues (#groupbystr#) select #groupbystr# from #tablename# where projid = '#projid#' #filterstr# ";
+    sql = sql.replace("#groupbystr#", groupbystr).replace("#groupbystr#", groupbystr).replace('#projid#', projid).replace('#filterstr#', filterstr);
+    if (type == 1) {
+      sqls.push(sql.replace("#tablename#", "PreCheckIssues"));
+      sqls.push(sql.replace("#tablename#", "OpenCheckIssues"));
+      sqls.push(sql.replace("#tablename#", "FormalCheckIssues"));
+    } else {
+      sqls.push(sql.replace("#tablename#", "ServiceCheckIssues"));      
+    }
+    console.log(sqls);
+    
+    return sqls;
+  }
+
+  getissuesuminfo(projid, type, assign, build, floor, duedate, returntimes, groupbystr): Promise<any> {
+    return new Promise((resolve) => {
+      let promise = new Promise((resolve) => {
+        resolve(10);
+      });
+      let ret = [];
+      resolve(promise.then((v) => {
+        return this.resetdata("tmpissues");
+      }).then((v1: any) => {
+        let sqls = [];
+        sqls = this.getissuesumsql(projid, type, assign, build, floor, duedate, returntimes, groupbystr);
+        return this.db.sqlBatch(sqls);
+      }).then((v2: any) => {
+        let sql = "select #groupbystr# as fieldstr, count(*) as counts from tmpissues group by #groupbystr# ";//
+        sql = sql.replace("#groupbystr#", groupbystr).replace("#groupbystr#", groupbystr);
+        console.log(sql);
+        return this.db.executeSql(sql, []);
+      }).then((v3: any) => {
+        let tmppromise = Promise.resolve(0);
+        let sum:number = 0;
+        let data:any; data = []; data = v3;        
+        for (let i = 0; i < data.rows.length; i++) {         
+          console.log('suminfo:' + JSON.stringify(data.rows.item(i)));
+          let item:any; item = [];
+          item = data.rows.item(i);
+          console.log("item:"+item);
+          tmppromise = tmppromise.then(() => {
+            console.log(item.fieldstr);
+            ret.push({fieldstr:item.fieldstr,counts:item.counts});
+            return item.counts;
+          }).then((v:number) => {
+            sum += v;
+            return sum;
+          })
+        }
+        return tmppromise;
+      }).then((v4: number) => {
+        ret.push({fieldstr:"全部",counts:v4});
+        return ret;
+      }).catch(err => {
+        this.warn('问题加载失败:' + err);
+        throw '问题加载失败';
+      }))
+    })
+  }
+
+  getissuelistsql(projid, type, assign, build, floor, duedate, returntimes, sorting): string {
+    let sql = "";
+    let filterstr = "";
+    if ((assign == "全部" || assign == "负责人") && (build == "全部" || build == "楼栋") && (floor == "全部" || floor == "楼层") && (duedate == "全部" || duedate == "整改时限") && (returntimes == "全部" || returntimes == "退回次数")) {
+      filterstr = "";
+    } else {
+      if (assign != "全部" && assign != "负责人") {
+        filterstr += " and ResponsibleName = '" + assign + "' ";
+      }
+      if (build != "全部" && build != "楼栋") {
+        filterstr += " and BuildingName = '" + build + "' ";
+      }
+      if (floor != "全部" && floor != "楼层") {
+        filterstr += " and FloorName = '" + floor + "' ";
+      }
+      if (duedate != "全部" && duedate != "整改时限") {
+        filterstr += " and LimitDate = '" + duedate + "' ";
+      }
+      if (returntimes != "全部" && returntimes != "退回次数") {
+        filterstr += " and ReturnNum = " + returntimes + " ";
+      }
+    }
+    if (type == 1) {
+      sql = "select Id,1 as type,IssueId,batchname,BuildingName,FloorName,RoomName,IssueStatus,PositionName,CheckItemName,IssueDesc,ResponsibleName,ReturnNum,LimitDate,ReFormDate,ReturnDate,UrgencyId from PreCheckIssues where projid = '#projid#' #filterstr# ";
+      sql += " union select Id,2 as type,IssueId,batchname,BuildingName,FloorName,RoomName,IssueStatus,PositionName,CheckItemName,IssueDesc,ResponsibleName,ReturnNum,LimitDate,ReFormDate,ReturnDate,UrgencyId from OpenCheckIssues where projid = '#projid#' #filterstr# ";
+      sql += " union select Id,3 as type,IssueId,batchname,BuildingName,FloorName,RoomName,IssueStatus,PositionName,CheckItemName,IssueDesc,ResponsibleName,ReturnNum,LimitDate,ReFormDate,ReturnDate,UrgencyId from FormalCheckIssues where projid = '#projid#' #filterstr# order by #orderstr# issueid desc";
+      sql = sql.replace('#projid#', projid).replace('#projid#', projid).replace('#projid#', projid).replace('#filterstr#', filterstr).replace('#filterstr#', filterstr).replace('#filterstr#', filterstr);
+
+    } else {
+      sql = "select Id,4 as type,IssueId,batchname,BuildingName,FloorName,RoomName,IssueStatus,PositionName,CheckItemName,IssueDesc,ResponsibleName,ReturnNum,LimitDate,ReFormDate,ReturnDate,UrgencyId from ServiceCheckIssues where projid = '#projid#' #filterstr# order by #orderstr# issueid desc";
+      sql = sql.replace('#projid#', projid).replace('#filterstr#', filterstr);
+    }
+
+    if (sorting == 'default') {
+      sql = sql.replace('#orderstr#', '');
+    } else {
+      sql = sql.replace('#orderstr#', sorting + ',');
+    }
+    console.log(sql);
+    return sql;
+  }
+
+  getbuilderissuelist(projid, type, assign, build, floor, duedate, returntimes, sorting): Promise<Array<any>> {
     return new Promise((resolve) => {
       let promise = new Promise((resolve) => {
         resolve(100);
@@ -2157,18 +2285,19 @@ export class initBaseDB {
           needupd = v1.rows.item(0).Needupd;
         }
         let sql = "";
-        if (type == 1) {
-          sql = "select Id,1 as type,IssueId,batchname,BuildingName,FloorName,RoomName,IssueStatus,PositionName,CheckItemName,IssueDesc,ResponsibleName,ReturnNum,LimitDate,ReFormDate,ReturnDate from PreCheckIssues where projid = '#projid#'";
-          sql += " union select Id,2 as type,IssueId,batchname,BuildingName,FloorName,RoomName,IssueStatus,PositionName,CheckItemName,IssueDesc,ResponsibleName,ReturnNum,LimitDate,ReFormDate,ReturnDate from OpenCheckIssues where projid = '#projid#'";
-          sql += " union select Id,3 as type,IssueId,batchname,BuildingName,FloorName,RoomName,IssueStatus,PositionName,CheckItemName,IssueDesc,ResponsibleName,ReturnNum,LimitDate,ReFormDate,ReturnDate from FormalCheckIssues where projid = '#projid#' order by issueid desc";
-          sql = sql.replace('#projid#', projid).replace('#projid#', projid).replace('#projid#', projid);
+        sql = this.getissuelistsql(projid, type, assign, build, floor, duedate, returntimes, sorting);
+        // if (type == 1) {
+        //   sql = "select Id,1 as type,IssueId,batchname,BuildingName,FloorName,RoomName,IssueStatus,PositionName,CheckItemName,IssueDesc,ResponsibleName,ReturnNum,LimitDate,ReFormDate,ReturnDate from PreCheckIssues where projid = '#projid#'";
+        //   sql += " union select Id,2 as type,IssueId,batchname,BuildingName,FloorName,RoomName,IssueStatus,PositionName,CheckItemName,IssueDesc,ResponsibleName,ReturnNum,LimitDate,ReFormDate,ReturnDate from OpenCheckIssues where projid = '#projid#'";
+        //   sql += " union select Id,3 as type,IssueId,batchname,BuildingName,FloorName,RoomName,IssueStatus,PositionName,CheckItemName,IssueDesc,ResponsibleName,ReturnNum,LimitDate,ReFormDate,ReturnDate from FormalCheckIssues where projid = '#projid#' order by issueid desc";
+        //   sql = sql.replace('#projid#', projid).replace('#projid#', projid).replace('#projid#', projid);
 
-        } else {
-          sql = " union select Id,4 as type,IssueId,batchname,BuildingName,FloorName,RoomName,IssueStatus,PositionName,CheckItemName,IssueDesc,ResponsibleName,ReturnNum,LimitDate,ReFormDate,ReturnDate from ServiceCheckIssues where projid = '#projid#' order by issueid desc";
-          sql = sql.replace('#projid#', projid);
+        // } else {
+        //   sql = " select Id,4 as type,IssueId,batchname,BuildingName,FloorName,RoomName,IssueStatus,PositionName,CheckItemName,IssueDesc,ResponsibleName,ReturnNum,LimitDate,ReFormDate,ReturnDate from ServiceCheckIssues where projid = '#projid#' order by issueid desc";
+        //   sql = sql.replace('#projid#', projid);
 
-        }
-        console.log(sql);
+        // }
+        // console.log(sql);
         return this.db.executeSql(sql, []);
       }).then((v2: any) => {
         console.log(v2);
@@ -2247,10 +2376,10 @@ export class initBaseDB {
         sql = sql.replace('#issueid#', issueid);
         console.log(sql);
         return this.db.executeSql(sql, []);
-      }).then((v3: any) => {        
+      }).then((v3: any) => {
         ret.push(v3);
         console.log(ret);
-        return ret;        
+        return ret;
       }).catch(err => {
         this.warn('问题加载失败:' + err);
         throw '问题加载失败';

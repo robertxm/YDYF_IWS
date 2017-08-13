@@ -38,6 +38,28 @@
 			</td>
 		</tr>
 	</table>
+	<table style="width:100%;">
+		<tr>
+			<td *ngIf="selectedTab != '待派单'">				
+				<button ion-button full [color]="assigncolor" style="font-size:1.3rem; padding:0;border-right:1px solid gray;" (click)="assignfilter()">{{assignfilterstr}}{{assignarrow}}</button>				
+			</td>
+			<td *ngIf="selectedTab != '被退回'">
+				<button ion-button full [color]="buildcolor" style="font-size:1.3rem; padding:0;border-right:1px solid gray;" (click)="buildfilter()">{{buildingfilterstr}}{{buildarrow}}</button>
+			</td >
+			<td *ngIf="selectedTab != '被退回'">
+				<button ion-button full [color]="floorcolor" style="font-size:1.3rem; padding:0;border-right:1px solid gray;" (click)="floorfilter()">{{floorfilterstr}}{{floorarrow}}</button>
+			</td>
+			<td *ngIf="selectedTab != '被退回'">
+				<button ion-button full [color]="duedatecolor" style="font-size:1.3rem; padding:0;border-right:1px solid gray;" (click)="duedatefilter()">{{duedatefilterstr}}{{duedatearrow}}</button>
+			</td>
+			<td *ngIf="selectedTab == '被退回'">
+				<button ion-button full [color]="returncolor" style="font-size:1.3rem; padding:0;border-right:1px solid gray;" (click)="returntimesfilter()">{{returntimesfilterstr}}{{returnarrow}}</button>
+			</td>
+			<td >
+				<button ion-button full [color]="sortingcolor" style="font-size:1.3rem; padding:0;border-right:1px solid gray;" (click)="sortingclick()">{{sortingstr}}{{sortingarrow}}</button>
+			</td>
+		</tr>
+	</table>
 </ion-header>
 <ion-content padding>
 	<div *ngIf="needupd" style="background-color:blue; text-align:center; color:white"> 你有问题未更新 下拉刷新</div>

@@ -33,6 +33,26 @@ export class BuildermaintenancePage {
   returncounts: number = 0;
   showflag: boolean = false;
   exportissueurl: string = "";
+  assignfilterstr: string = "负责人";// + "∨";
+  buildingfilterstr: string = "楼栋";// + "∨";
+  floorfilterstr: string = "楼层";// + "∨";
+  duedatefilterstr: string = "整改时限";// + "∨";
+  sortingstr: string = "默认排序";// + "∨";
+  sortingname: string = "default";
+  returntimesfilterstr: string = "退回次数";// + "∨";
+  sortings: Array<any>;
+  assigncolor: string = "light";
+  buildcolor: string = "light";
+  floorcolor: string = "light";
+  duedatecolor: string = "light";
+  returncolor: string = "light";
+  sortingcolor: string = "light";
+  assignarrow: string = "∨";
+  buildarrow: string = "∨";
+  floorarrow: string = "∨";
+  duedatearrow: string = "∨";
+  returnarrow: string = "∨";
+  sortingarrow: string = "∨";
   constructor(public navCtrl: NavController, public navParams: NavParams, public actionSheetCtrl: ActionSheetController, public dialogs: Dialogs,
     public initBaseDB: initBaseDB, public nativeservice: NativeService, public localStorage: LocalStorage, private clipboard: Clipboard) {
     this.localStorage.getItem('curuser').then(val => {
@@ -40,6 +60,7 @@ export class BuildermaintenancePage {
       this.username = val.username;
       this.token = val.token;
     })
+    this.sortings = [{ fieldstr: "默认排序", fieldname: "default" }, { fieldstr: "工序批次", fieldname: "BatchName" }, { fieldstr: "紧急程度", fieldname: "UrgencyId" }, { fieldstr: "整改时限", fieldname: "LimitDate" }, { fieldstr: "退回次数", fieldname: "ReturnNum" }];
   }
 
   ionViewDidEnter() {
@@ -90,8 +111,8 @@ export class BuildermaintenancePage {
         if (issue['selected']) {
           iss4.push({ Id: issue['id'] });
         }
-      }      
-      console.log(iss4);      
+      }
+      console.log(iss4);
       if (iss4.length > 0) {
         issjson.push({ TableName: "ServiceCheckIssues", data: iss4 });
       }
@@ -115,7 +136,7 @@ export class BuildermaintenancePage {
     this.clipboard.paste().then(
       (resolve: string) => {
         this.showflag = false;
-        this.nativeservice.showToast("复制成功.");        
+        this.nativeservice.showToast("复制成功.");
       },
       (reject: string) => {
         this.nativeservice.alert('错误: ' + reject);
@@ -257,7 +278,7 @@ export class BuildermaintenancePage {
         console.log(val);
         if (val && val != null) {
           this.projid = val.projid; this.projname = val.projname;
-          if (val.needupd == 1){
+          if (val.needupd == 1) {
             return this.nativeservice.isConnecting().then(val => {
               if (val == true) {
                 this.nativeservice.showLoading("正在下载基础数据,请稍侯...")
@@ -273,8 +294,8 @@ export class BuildermaintenancePage {
           this.nativeservice.showToast("没有需要整改的项目问题")
           throw '';
         }
-      }).then((v2)=>{
-        return this.initBaseDB.getbuilderissuelist(this.projid, 4);
+      }).then((v2) => {
+        return this.initBaseDB.getbuilderissuelist(this.projid, 4, this.assignfilterstr, this.buildingfilterstr, this.floorfilterstr, this.duedatefilterstr, this.returntimesfilterstr, this.sortingname);
       }).then((val: any) => {
         if (val) {
           this.issuelist = val;
@@ -295,104 +316,167 @@ export class BuildermaintenancePage {
         throw '问题加载失败';
       }))
     })
-
-    // this.issues = [{
-    //   selected: false,
-    //   issueId: '1505100031',
-    //   prjid: 'sldfkjsf029323', prjname: '同美花园2期',
-    //   buildingid: '10930414234', buildingname: '18号楼',
-    //   floorid: '10920419kdsjf023', floorname: '21楼',
-    //   roomid: 'ieko098390293lkfs123df', roomname: '2001单元',
-    //   catagory: '墙面', description: '掉漆严重',
-    //   duedate: '2017-06-03', overdays: 19, returntimes: 3,
-    //   ownerid: '10293810012323', ownername: '李小龙',
-    //   assigntoid: '1290301390123', assigntoname: '黄飞鸿',
-    //   status: '已整改'
-    // }, {
-    //   selected: false,
-    //   issueId: '1505100032',
-    //   prjid: 'sldfkjsf029323', prjname: '同美花园2期',
-    //   buildingid: '73187318381', buildingname: '13号楼',
-    //   floorid: '194182479u8uf38', floorname: '10楼',
-    //   roomid: 'ieko098390293lkfs123df', roomname: '0912单元',
-    //   catagory: '照明', description: '开关破损',
-    //   duedate: '2017-06-05', overdays: 0, returntimes: 1,
-    //   ownerid: '10293810012323', ownername: '李小龙',
-    //   assigntoid: '1290301390123', assigntoname: '黄飞鸿',
-    //   status: '待整改'
-    // }, {
-    //   selected: false,
-    //   issueId: '1505100033',
-    //   prjid: 'sldfkjsf029323', prjname: '同美花园2期',
-    //   buildingid: '10930414234', buildingname: '18号楼',
-    //   floorid: '10920419kdsjf023', floorname: '21楼',
-    //   roomid: 'ieko098390293lkfs123df', roomname: '2001单元',
-    //   catagory: '墙面', description: '掉漆严重',
-    //   duedate: '2017-06-03', overdays: 3, returntimes: 0,
-    //   ownerid: '10293810012323', ownername: '李小龙',
-    //   assigntoid: '1290301390123', assigntoname: '黄飞鸿',
-    //   status: '已整改'
-    // }, {
-    //   selected: false,
-    //   issueId: '1505100034',
-    //   prjid: 'sldfkjsf029323', prjname: '同美花园2期',
-    //   buildingid: '10930414234', buildingname: '18号楼',
-    //   floorid: '10920419kdsjf023', floorname: '21楼',
-    //   roomid: 'ieko098390293lkfs123df', roomname: '2001单元',
-    //   catagory: '墙面', description: '掉漆严重',
-    //   duedate: '2017-06-03', overdays: 3, returntimes: 1,
-    //   ownerid: '10293810012323', ownername: '李小龙',
-    //   assigntoid: '1290301390123', assigntoname: '黄飞鸿',
-    //   status: '被退回'
-    // }, {
-    //   selected: false,
-    //   issueId: '1505100035',
-    //   prjid: 'sldfkjsf029323', prjname: '同美花园2期',
-    //   buildingid: '10930414234', buildingname: '18号楼',
-    //   floorid: '10920419kdsjf023', floorname: '21楼',
-    //   roomid: 'ieko098390293lkfs123df', roomname: '2001单元',
-    //   catagory: '墙面', description: '掉漆严重',
-    //   duedate: '2017-06-03', overdays: 0, returntimes: 0,
-    //   ownerid: '10293810012323', ownername: '李小龙',
-    //   assigntoid: '', assigntoname: '',
-    //   status: '待指派'
-    // }, {
-    //   selected: false,
-    //   issueId: '1505100036',
-    //   prjid: 'sldfkjsf029323', prjname: '同美花园2期',
-    //   buildingid: '10930414234', buildingname: '18号楼',
-    //   floorid: '10920419kdsjf023', floorname: '21楼',
-    //   roomid: 'ieko098390293lkfs123df', roomname: '2001单元',
-    //   catagory: '墙面', description: '掉漆严重',
-    //   duedate: '2017-06-03',
-    //   ownerid: '10293810012323', ownername: '李小龙',
-    //   assigntoid: '1290301390123', assigntoname: '黄飞鸿',
-    //   status: '已整改'
-    // }, {
-    //   selected: false,
-    //   issueId: '1505100037',
-    //   prjid: 'sldfkjsf029323', prjname: '同美花园2期',
-    //   buildingid: '10930414234', buildingname: '18号楼',
-    //   floorid: '10920419kdsjf023', floorname: '21楼',
-    //   roomid: 'ieko098390293lkfs123df', roomname: '2001单元',
-    //   catagory: '墙面', description: '掉漆严重',
-    //   duedate: '2017-06-03', overdays: 4, returntimes: 0,
-    //   ownerid: '10293810012323', ownername: '李小龙',
-    //   assigntoid: '1290301390123', assigntoname: '黄飞鸿',
-    //   status: '待整改'
-    // }, {
-    //   selected: false,
-    //   issueId: '1505100038',
-    //   prjid: 'sldfkjsf029323', prjname: '同美花园2期',
-    //   buildingid: '10930414234', buildingname: '18号楼',
-    //   floorid: '10920419kdsjf023', floorname: '21楼',
-    //   roomid: 'ieko098390293lkfs123df', roomname: '2001单元',
-    //   catagory: '墙面', description: '掉漆严重',
-    //   duedate: '2017-06-03', overdays: 0, returntimes: 4,
-    //   ownerid: '10293810012323', ownername: '李小龙',
-    //   assigntoid: '1290301390123', assigntoname: '黄飞鸿',
-    //   status: '被退回'
-    // }];
   }
 
+  presentfilter(groupbystr) {
+        this.initBaseDB.getissuesuminfo(this.projid, 4, this.assignfilterstr, this.buildingfilterstr, this.floorfilterstr, this.duedatefilterstr, this.returntimesfilterstr, groupbystr).then(val => {
+            if (val && val.length > 0) {
+                let actionSheet = this.actionSheetCtrl.create({
+                    title: '选择过滤条件',
+                    buttons: [{ text: '取消', role: 'cancel', handler: () => { this.cancelfilter(groupbystr); } }]
+                });
+                if (groupbystr == "LimitDate") {
+                    for (let s of val) {
+                        if (s.fieldstr == "全部") {
+                            actionSheet.addButton({ text: s.fieldstr + '  共 ' + s.counts + ' 条', handler: () => { this.filter(groupbystr, s); } });
+                        } else {
+                            let dt = new Date(s.fieldstr);
+                            actionSheet.addButton({ text: dt.toLocaleDateString() + '  共 ' + s.counts + ' 条', handler: () => { this.filter(groupbystr, s); } });
+                        }
+                    }
+                } else {
+                    for (let s of val) {
+                        actionSheet.addButton({ text: s.fieldstr + '  共 ' + s.counts + ' 条', handler: () => { this.filter(groupbystr, s); } });
+                    }
+                }
+                actionSheet.present();
+            }
+        })
+    }
+
+    cancelfilter(groupbystr) {
+        if (groupbystr == "ResponsibleName") {
+            this.assigncolor = "light";
+            this.assignarrow = "∨";
+        } else if (groupbystr == "BuildingName") {            
+            this.buildcolor = "light";
+            this.buildarrow = "∨";
+        } else if (groupbystr == "FloorName") {            
+            this.floorcolor = "light";
+            this.floorarrow = "∨";
+        } else if (groupbystr == "LimitDate") {            
+            this.duedatecolor = "light";
+            this.duedatearrow = "∨";
+        } else if (groupbystr == "ReturnNum") {            
+            this.returncolor = "light";
+            this.returnarrow = "∨";
+        }
+    }
+
+    filter(groupbystr, item) {
+        if (groupbystr == "ResponsibleName") {
+            this.assignfilterstr = item.fieldstr;
+            this.assigncolor = "light";
+            this.assignarrow = "∨";
+        } else if (groupbystr == "BuildingName") {
+            this.buildingfilterstr = item.fieldstr;
+            this.buildcolor = "light";
+            this.buildarrow = "∨";
+        } else if (groupbystr == "FloorName") {
+            this.floorfilterstr = item.fieldstr;
+            this.floorcolor = "light";
+            this.floorarrow = "∨";
+        } else if (groupbystr == "LimitDate") {
+            this.duedatefilterstr = item.fieldstr;
+            this.duedatecolor = "light";
+            this.duedatearrow = "∨";
+        } else if (groupbystr == "ReturnNum") {
+            this.returntimesfilterstr = item.fieldstr;
+            this.returncolor = "light";
+            this.returnarrow = "∨";
+        }
+        this.refresh();
+    }
+
+    refresh(): Promise<any> {
+        return new Promise((resolve) => {
+            this.issuelist = []; this.teammembers = [];
+            let promise = new Promise((resolve) => {
+                resolve(100);
+            });
+            console.log("refreshIssues");
+            this.nativeservice.showLoading("处理中，请稍侯...");
+            resolve(promise.then((v1) => {
+                return this.initBaseDB.getbuilderissuelist(this.projid, 4, this.assignfilterstr, this.buildingfilterstr, this.floorfilterstr, this.duedatefilterstr, this.returntimesfilterstr, this.sortingname);
+            }).then((val: any) => {
+                console.log("refresh end");
+                if (val) {
+                    this.issuelist = val;
+                    this.needupd = val[8];
+                    this.asscounts = val[4];
+                    this.forfixcounts = val[5];
+                    this.fixedcounts = val[6];
+                    this.returncounts = val[7];
+                }
+                return 1;
+            }).then((v: any) => {
+                this.nativeservice.hideLoading();
+                return 1;
+            }).catch(err => {
+                this.nativeservice.hideLoading();
+                console.log('问题加载失败:' + err);
+                throw '问题加载失败';
+            }))
+        })
+    }
+
+    assignfilter() {
+        this.assignarrow = "∧";
+        this.assigncolor = "primary";
+        this.presentfilter("ResponsibleName");
+    }
+
+    buildfilter() {
+        this.buildarrow = "∧";
+        this.buildcolor = "primary";
+        this.presentfilter("BuildingName");
+    }
+
+    floorfilter() {
+        this.floorarrow = "∧";
+        this.floorcolor = "primary";
+        this.presentfilter("FloorName");
+    }
+
+    duedatefilter() {
+        this.duedatearrow = "∧";
+        this.duedatecolor = "primary";
+        this.presentfilter("LimitDate");
+    }
+
+    returntimesfilter() {
+        this.returnarrow = "∧";
+        this.returncolor = "primary";
+        this.presentfilter("ReturnNum");
+    }
+
+    presentsorting() {
+        let actionSheet = this.actionSheetCtrl.create({
+            title: '选择排序规则',
+            buttons: [{ text: '取消', role: 'cancel', handler: () => { this.cancelsorting(); }}]
+        });
+        for (let s of this.sortings) {
+            actionSheet.addButton({ text: s.fieldstr, handler: () => { this.sorting(s); } });
+        }
+        actionSheet.present();
+    }
+
+    sorting(item) {
+        this.sortingstr = item.fieldstr;
+        this.sortingname = item.fieldname;
+        this.sortingcolor = "light";
+        this.sortingarrow = "∨";
+        this.refresh();
+    }
+
+    sortingclick() {
+        this.sortingcolor = "primary";
+        this.sortingarrow = "∧";
+        this.presentsorting();
+    }
+
+    cancelsorting() {
+        this.sortingcolor = "light";
+        this.sortingarrow = "∨";
+    }
 }
