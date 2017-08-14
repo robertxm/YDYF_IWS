@@ -377,7 +377,8 @@ export class BuildermaintenancePage {
             this.floorcolor = "light";
             this.floorarrow = "∨";
         } else if (groupbystr == "LimitDate") {
-            this.duedatefilterstr = item.fieldstr;
+            let dt = new Date(item.fieldstr);
+            this.duedatefilterstr = dt.toLocaleDateString();
             this.duedatecolor = "light";
             this.duedatearrow = "∨";
         } else if (groupbystr == "ReturnNum") {
